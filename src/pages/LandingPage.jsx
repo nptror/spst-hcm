@@ -59,7 +59,7 @@ const LandingPage = () => {
                             <div className="absolute top-0 right-0 w-32 h-32 bg-primary-container/5 rounded-bl-[100px] -z-10 transition-transform group-hover:scale-110"></div>
                             <div>
                                 <div className="w-12 h-12 rounded bg-primary-container text-on-primary flex items-center justify-center mb-6 shadow-sm">
-                                    <span className="material-symbols-outlined text-[24px]">school</span>
+                                    <span className="material-symbols-outlined text-[24px] animate-[float_4s_ease-in-out_infinite]">school</span>
                                 </div>
                                 <h3 className="font-headline-md text-headline-md text-primary mb-3 group-hover:text-secondary-container transition-colors">Cần (Sự Chăm Chỉ)</h3>
                                 <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
@@ -76,7 +76,7 @@ const LandingPage = () => {
                         <div className="lg:col-span-4 bg-surface-container-lowest border border-surface-variant rounded-xl p-8 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_10px_20px_rgba(0,33,71,0.05)] hover:border-primary flex flex-col justify-between group">
                             <div>
                                 <div className="w-12 h-12 rounded bg-surface-variant text-primary flex items-center justify-center mb-6 shadow-sm">
-                                    <span className="material-symbols-outlined text-[24px]">hourglass_empty</span>
+                                    <span className="material-symbols-outlined text-[24px] animate-[hourglass_4s_ease-in-out_infinite]">hourglass_empty</span>
                                 </div>
                                 <h3 className="font-headline-md text-headline-md text-primary mb-3 group-hover:text-secondary-container transition-colors">Kiệm (Sự Tiết Kiệm)</h3>
                                 <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
@@ -95,7 +95,7 @@ const LandingPage = () => {
                         <div className="lg:col-span-6 bg-surface-container-lowest border border-surface-variant rounded-xl p-8 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_10px_20px_rgba(0,33,71,0.05)] hover:border-primary flex flex-col justify-between group">
                             <div>
                                 <div className="w-12 h-12 rounded bg-surface-variant text-primary flex items-center justify-center mb-6 shadow-sm">
-                                    <span className="material-symbols-outlined text-[24px]">balance</span>
+                                    <span className="material-symbols-outlined text-[24px] animate-[wiggle_3s_ease-in-out_infinite]">balance</span>
                                 </div>
                                 <h3 className="font-headline-md text-headline-md text-primary mb-3 group-hover:text-secondary-container transition-colors">Liêm (Sự Trong Sạch)</h3>
                                 <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
@@ -108,7 +108,7 @@ const LandingPage = () => {
                         <div className="lg:col-span-6 bg-surface-container-lowest border border-surface-variant rounded-xl p-8 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_10px_20px_rgba(0,33,71,0.05)] hover:border-primary flex flex-col justify-between group">
                             <div>
                                 <div className="w-12 h-12 rounded bg-primary-container text-on-primary flex items-center justify-center mb-6 shadow-sm">
-                                    <span className="material-symbols-outlined text-[24px]">explore</span>
+                                    <span className="material-symbols-outlined text-[24px] animate-[spin_12s_linear_infinite]">explore</span>
                                 </div>
                                 <h3 className="font-headline-md text-headline-md text-primary mb-3 group-hover:text-secondary-container transition-colors">Chính (Sự Ngay Thẳng)</h3>
                                 <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
