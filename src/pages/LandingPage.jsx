@@ -4,13 +4,21 @@ import Header from '../component/Header';
 import Footer from '../component/Footer';
 import heroImage from "../assets/hero.jpg";
 
-
+// Biến bộ nhớ chỉ reset khi trình duyệt F5 / Refresh / Tải lại trang
+let isInitialBrowserLoad = true;
 
 const LandingPage = () => {
     // ----------------------------------------------------
-    // SPLASH SCREEN & CURTAIN TRANSITION LOGIC (Every Reload)
+    // SPLASH SCREEN LOGIC: Chỉ bật khi tải lại trang / vào trang lần đầu
+    // Không bật khi chuyển trang nội bộ (Client-side routing)
     // ----------------------------------------------------
-    const [showSplash, setShowSplash] = useState(true);
+    const [showSplash, setShowSplash] = useState(() => {
+        if (isInitialBrowserLoad) {
+            isInitialBrowserLoad = false;
+            return true;
+        }
+        return false;
+    });
     const [progress, setProgress] = useState(0);
     const [isContentHidden, setIsContentHidden] = useState(false);
     const [isCurtainUp, setIsCurtainUp] = useState(false);
