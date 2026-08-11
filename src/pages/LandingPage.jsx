@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../component/Header';
 import Footer from '../component/Footer';
+import heroImage from "../assets/hero.jpg";
+
+
 
 const LandingPage = () => {
     // ----------------------------------------------------
@@ -76,27 +79,25 @@ const LandingPage = () => {
 
     return (
         <div className="bg-surface text-on-surface antialiased min-h-screen flex flex-col font-body-md text-body-md relative">
-            
+
             {/* ================================================== */}
             {/* SPLASH SCREEN OVERLAY (Màn hình rèm kéo 2 lớp)      */}
             {/* ================================================== */}
             {showSplash && (
                 <div id="splash-screen" className="fixed inset-0 z-[100] pointer-events-auto select-none">
                     {/* Lớp rèm phụ màu cam/nâu đệm phía sau */}
-                    <div 
-                        className={`curtain-layer absolute inset-0 bg-secondary-container z-0 ${
-                            isCurtainUp ? 'curtain-up-back' : ''
-                        }`}
+                    <div
+                        className={`curtain-layer absolute inset-0 bg-secondary-container z-0 ${isCurtainUp ? 'curtain-up-back' : ''
+                            }`}
                     ></div>
 
                     {/* Lớp rèm chính màu Navy chứa nội dung Splash */}
-                    <div 
-                        className={`curtain-layer absolute inset-0 bg-primary-container z-10 flex flex-col items-center justify-center text-center px-4 shadow-2xl ${
-                            isCurtainUp ? 'curtain-up-main' : ''
-                        }`}
+                    <div
+                        className={`curtain-layer absolute inset-0 bg-primary-container z-10 flex flex-col items-center justify-center text-center px-4 shadow-2xl ${isCurtainUp ? 'curtain-up-main' : ''
+                            }`}
                     >
                         {/* Nút bỏ qua nhanh ở góc trên */}
-                        <button 
+                        <button
                             onClick={handleSkipSplash}
                             className="absolute top-6 right-6 text-xs text-on-primary-container hover:text-white bg-white/10 hover:bg-white/20 px-3.5 py-1.5 rounded-full transition-all border border-white/10 flex items-center gap-1 cursor-pointer"
                         >
@@ -104,10 +105,9 @@ const LandingPage = () => {
                             <span className="material-symbols-outlined text-[14px]">fast_forward</span>
                         </button>
 
-                        <div 
-                            className={`space-y-6 max-w-lg transition-all duration-500 transform ${
-                                isContentHidden ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
-                            }`}
+                        <div
+                            className={`space-y-6 max-w-lg transition-all duration-500 transform ${isContentHidden ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
+                                }`}
                         >
                             {/* Subtitle Badge */}
                             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-variant/10 border border-white/10">
@@ -125,7 +125,7 @@ const LandingPage = () => {
                             {/* Ultra Progress Bar phát sáng & Shimmer */}
                             <div className="relative w-64 md:w-80 h-3 bg-black/40 backdrop-blur-md rounded-full mx-auto p-0.5 border border-white/20 shadow-[0_0_15px_rgba(0,0,0,0.5)] overflow-hidden">
                                 <div className="h-full w-full bg-white/5 rounded-full overflow-hidden relative">
-                                    <div 
+                                    <div
                                         className="h-full progress-shimmer rounded-full transition-all ease-out duration-150 relative shadow-[0_0_12px_#fd8b00]"
                                         style={{ width: `${progress}%` }}
                                     >
@@ -135,7 +135,7 @@ const LandingPage = () => {
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <p className="text-xs text-on-primary-container font-mono tracking-wider opacity-90 flex items-center justify-center gap-2">
                                 <span>Đang khởi tạo bộ lọc giá trị...</span>
                                 <span className="font-bold text-secondary-container">{progress}%</span>
@@ -158,7 +158,7 @@ const LandingPage = () => {
                         <div
                             className="w-full h-full bg-cover bg-center transition-transform duration-1000 scale-105"
                             style={{
-                                backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuBi82NpyM2nZLFTgoYFMX6I3B4ThjJXc-0F14LPyQOutK8Qr4bm9_5d9EeGzzGd8n9unS7MptZ_2x0JtLBG0kJ8ix20Cl1rocQsFVEv41rlQkoRaJOp3npQG23UqV2_Gj8XO81NXJ2rA-Uwj-KUCiOIxFpgkjtGeFhizafdcGOsqlJA02EDZZ7DKTQANoG2oFeWy2D46l99iwKC5b0t3WVFQd9mf5-5iznr3fmNAfypZ9LSQuOJ4oPR')",
+                                backgroundImage: `url(${heroImage})`,
                             }}
                         ></div>
                     </div>
@@ -183,22 +183,22 @@ const LandingPage = () => {
                             </div>
 
                             <div className="flex flex-wrap gap-4 pt-4">
-                                <a 
-                                    href="#norms" 
+                                <a
+                                    href="#norms"
                                     className="bg-primary text-on-primary font-label-md text-label-md px-8 py-3.5 rounded shadow-md hover:bg-primary-container hover:shadow-lg transition-all active:scale-95 duration-100 flex items-center gap-2"
                                 >
                                     Khám phá triết lý
                                     <span className="material-symbols-outlined text-[18px]">arrow_downward</span>
                                 </a>
-                                <Link 
-                                    to="/practice" 
+                                <Link
+                                    to="/practice"
                                     className="bg-transparent text-primary font-label-md text-label-md px-8 py-3.5 rounded border-2 border-primary hover:bg-surface-container-low transition-all active:scale-95 duration-100 flex items-center gap-2"
                                 >
                                     <span class="material-symbols-outlined text-[18px]">checklist</span>
                                     Thực hành ngay
                                 </Link>
-                                <Link 
-                                    to="/challenge" 
+                                <Link
+                                    to="/challenge"
                                     className="bg-secondary-container/10 text-secondary border border-secondary-container/30 font-label-md text-label-md px-6 py-3.5 rounded hover:bg-secondary-container/20 transition-all flex items-center gap-2"
                                 >
                                     <span className="material-symbols-outlined text-[18px]">psychology</span>
@@ -324,8 +324,8 @@ const LandingPage = () => {
                                 <span className="text-secondary font-semibold uppercase text-xs tracking-wider">Thực tiễn sinh viên</span>
                                 <h2 className="font-headline-lg text-headline-lg text-primary mt-1">Góc Nhìn & Tình Huống Đạo Đức Số</h2>
                             </div>
-                            <Link 
-                                to="/challenge" 
+                            <Link
+                                to="/challenge"
                                 className="inline-flex items-center gap-2 text-primary font-label-md hover:text-secondary transition-colors"
                             >
                                 <span>Xem tất cả tình huống</span>
@@ -392,8 +392,8 @@ const LandingPage = () => {
                             Bắt đầu hành trình tự đánh giá và duy trì thói quen đạo đức mỗi ngày với bảng điều khiển cá nhân hóa.
                         </p>
                         <div className="pt-4 flex justify-center gap-4">
-                            <Link 
-                                to="/practice" 
+                            <Link
+                                to="/practice"
                                 className="bg-secondary-container text-on-secondary-container font-label-md px-8 py-3.5 rounded font-bold hover:brightness-110 transition-all shadow-lg active:scale-95"
                             >
                                 Bắt đầu nhật ký rèn luyện
