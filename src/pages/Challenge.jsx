@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '../component/Header';
 import Footer from '../component/Footer';
 import scenarioImg1 from '../assets/1.png';
@@ -527,6 +528,7 @@ const getResultMessage = (bestCount) => {
 };
 
 const Challenge = () => {
+    const navigate = useNavigate();
     const studentName = localStorage.getItem('student_name') || 'Minh';
     const [currentIndex, setCurrentIndex] = useState(0);
     const [answers, setAnswers] = useState({});
@@ -578,7 +580,7 @@ const Challenge = () => {
         if (currentIndex < scenarios.length - 1) {
             setCurrentIndex(currentIndex + 1);
         } else {
-            setFinished(true);
+            navigate('/result');
         }
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
