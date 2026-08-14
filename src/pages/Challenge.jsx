@@ -527,9 +527,12 @@ const getResultMessage = (bestCount) => {
 };
 
 const Challenge = () => {
+    const studentName = localStorage.getItem('student_name') || 'Minh';
     const [currentIndex, setCurrentIndex] = useState(0);
     const [answers, setAnswers] = useState({});
     const [finished, setFinished] = useState(false);
+    const [showCurtain, setShowCurtain] = useState(true);
+    const [isCurtainUp, setIsCurtainUp] = useState(false);
     const feedbackRef = useRef(null);
 
     const scenario = scenarios[currentIndex];
@@ -548,6 +551,22 @@ const Challenge = () => {
     const selectOption = (optionId) => {
         setAnswers((prev) => (prev[scenario.id] ? prev : { ...prev, [scenario.id]: optionId }));
     };
+
+    useEffect(() => {
+        // Trigger curtain transition
+        const timer1 = setTimeout(() => {
+            setIsCurtainUp(true);
+        }, 50);
+
+        const timer2 = setTimeout(() => {
+            setShowCurtain(false);
+        }, 1100);
+
+        return () => {
+            clearTimeout(timer1);
+            clearTimeout(timer2);
+        };
+    }, []);
 
     useEffect(() => {
         if (selected && feedbackRef.current) {
@@ -572,9 +591,29 @@ const Challenge = () => {
     };
 
     return (
-        <div className="bg-background text-on-background antialiased min-h-screen flex flex-col font-body-md text-body-md">
+        <div className="bg-background text-on-background antialiased min-h-screen flex flex-col font-body-md text-body-md relative overflow-hidden">
+            {showCurtain && (
+                <div className="fixed inset-0 z-[100] pointer-events-none select-none">
+                    {/* Orange layer - slides up second (has delay) */}
+                    <div
+                        className={`curtain-layer absolute inset-0 bg-secondary-container z-10 ${
+                            isCurtainUp ? 'curtain-up-back' : ''
+                        }`}
+                    ></div>
+                    {/* Navy layer - slides up first (no delay) */}
+                    <div
+                        className={`curtain-layer absolute inset-0 bg-primary-container z-20 shadow-2xl flex items-center justify-center ${
+                            isCurtainUp ? 'curtain-up-main' : ''
+                        }`}
+                    >
+                        <div className="text-on-primary font-headline-md text-xl tracking-wider animate-pulse">
+                            Đang mở thử thách...
+                        </div>
+                    </div>
+                </div>
+            )}
             <Header />
-            <main className="flex-grow max-w-container-max mx-auto w-full px-margin-mobile md:px-margin-desktop py-12 md:py-20 flex flex-col md:flex-row gap-gutter">
+            <main className="page-entrance flex-grow max-w-container-max mx-auto w-full px-margin-mobile md:px-margin-desktop py-12 md:py-20 flex flex-col md:flex-row gap-gutter">
                 {/* Sidebar Progress & Stats */}
                 <aside className="w-full md:w-1/4 flex flex-col gap-8 hidden md:flex">
                     {/* Character Stats */}
@@ -584,7 +623,7 @@ const Challenge = () => {
                                 <span className="material-symbols-outlined">person</span>
                             </div>
                             <div>
-                                <h3 className="font-headline-md text-lg font-bold text-primary">Minh</h3>
+                                <h3 className="font-headline-md text-lg font-bold text-primary">{studentName}</h3>
                                 <p className="font-body-md text-sm text-on-surface-variant">Sinh viên năm 3</p>
                             </div>
                         </div>

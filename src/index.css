@@ -121,6 +121,21 @@
     to   { transform: translateY(0); }
   }
 
+  @keyframes pageEntrance {
+    from {
+      opacity: 0;
+      transform: translateY(24px) scale(0.99);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .page-entrance {
+    animation: pageEntrance 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
   .curtain-layer {
     transition: transform 0.85s cubic-bezier(0.85, 0, 0.15, 1);
   }
@@ -132,6 +147,39 @@
   .curtain-up-back {
     transform: translateY(-100%) !important;
     transition-delay: 0.12s;
+  }
+
+  .curtain-down-main {
+    transform: translateY(0) !important;
+  }
+
+  .curtain-down-back {
+    transform: translateY(0) !important;
+    transition-delay: 0.12s;
+  }
+
+  @keyframes gridSweep {
+    0% {
+      background-position: 0% 0%;
+      -webkit-mask-position: 0% 0%;
+      mask-position: 0% 0%;
+    }
+    100% {
+      background-position: 100% 100%;
+      -webkit-mask-position: 100% 100%;
+      mask-position: 100% 100%;
+    }
+  }
+
+  .shimmering-grid {
+    background-image: radial-gradient(var(--color-primary-container) 1.5px, transparent 1.5px);
+    background-size: 32px 32px;
+    -webkit-mask-image: linear-gradient(135deg, rgba(0,0,0,0.15) 35%, rgba(0,0,0,0.85) 50%, rgba(0,0,0,0.15) 65%);
+    mask-image: linear-gradient(135deg, rgba(0,0,0,0.15) 35%, rgba(0,0,0,0.85) 50%, rgba(0,0,0,0.15) 65%);
+    -webkit-mask-size: 300% 300%;
+    mask-size: 300% 300%;
+    animation: gridSweep 10s linear infinite;
+    opacity: 0.4;
   }
 
   @keyframes shimmer {

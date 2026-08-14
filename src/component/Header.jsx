@@ -18,7 +18,7 @@ const Header = () => {
                     <NavLink to="/challenge" className={navLinkClass}>Thách thức</NavLink>
                     <NavLink to="/practice" className={navLinkClass}>Rèn luyện</NavLink>
                 </nav>
-                <Link to="/practice" className="bg-primary text-on-primary px-6 py-2 rounded font-label-md text-label-md hover:opacity-90 transition-opacity">Bắt đầu</Link>
+                <Link to="/register" className="bg-primary text-on-primary px-6 py-2 rounded font-label-md text-label-md hover:opacity-90 transition-opacity">Bắt đầu</Link>
             </div>
         </header>
     );
