@@ -160,4 +160,62 @@
   .glow-head {
     animation: glowPulse 1.2s infinite ease-in-out;
   }
+
+  .lift-hover {
+    transition: all 0.3s ease;
+  }
+
+  .lift-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 33, 71, 0.05);
+    border-color: var(--color-primary);
+  }
+
+  .ethics-tag {
+    border-radius: 2px;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .ethics-tag.can {
+    background-color: var(--color-primary-fixed);
+    color: var(--color-on-primary-fixed);
+  }
+
+  .ethics-tag.kiem,
+  .ethics-tag.chinh {
+    background-color: var(--color-surface-container);
+    color: var(--color-primary);
+  }
+
+  .ethics-tag.liem {
+    background-color: var(--color-secondary-fixed);
+    color: var(--color-secondary);
+  }
+
+  .ethics-tag.giao {
+    background-color: var(--color-secondary-fixed-dim);
+    color: var(--color-on-secondary-fixed-variant);
+  }
+
+  .status-bar-bg {
+    background-color: var(--color-surface-container-highest);
+    border-radius: 999px;
+    height: 8px;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .status-bar-fill-energy {
+    background-color: var(--color-secondary-container);
+    height: 100%;
+  }
+
+  .status-bar-fill-progress {
+    background-color: var(--color-surface-tint);
+    height: 100%;
+  }
 }
