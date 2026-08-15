@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../component/Header';
 import Footer from '../component/Footer';
+import { supabase } from '../supabaseClient';
 import scenarioImg1 from '../assets/1.png';
 import scenarioImg2 from '../assets/2.png';
 import scenarioImg3 from '../assets/3.png';
@@ -51,6 +52,7 @@ const scenarios = [
                 title: 'Đi ngủ ngay và tính tiếp vào sáng mai.',
                 desc: 'Sức khỏe là trên hết. Bạn quyết định đi ngủ để nạp lại năng lượng. Sáng mai sẽ dậy thật sớm để cố gắng làm bù, hoặc nếu không kịp sẽ xin lỗi nhóm trưởng và nộp trễ phần của mình.',
                 best: false,
+                impact: { resources: { progress: -10, energy: 15, money: 0 }, traits: { can: -10 } },
                 feedback: {
                     title: 'Rủi ro trì hoãn và thiếu trách nhiệm',
                     text: "Lựa chọn này có vẻ tốt cho sức khỏe ngắn hạn, nhưng lại tạo ra rủi ro lớn cho tập thể. Việc tự ý dời lịch và có nguy cơ nộp trễ làm ảnh hưởng đến tiến độ của cả nhóm. Chữ 'Cần' đòi hỏi sự nỗ lực và trách nhiệm hoàn thành công việc được giao.",
@@ -63,6 +65,7 @@ const scenarios = [
                 title: 'Thức trắng đêm để hoàn thành bằng mọi giá.',
                 desc: 'Trách nhiệm với nhóm là quan trọng nhất. Bạn pha một ly cà phê đậm, quyết tâm thức tới sáng để làm xong phần việc, chấp nhận ngày mai sẽ mệt mỏi khi đi học.',
                 best: false,
+                impact: { resources: { progress: 15, energy: -20, money: 0 }, traits: { can: -5 } },
                 feedback: {
                     title: 'Nhiệt tình nhưng thiếu khoa học',
                     text: 'Bạn thể hiện tinh thần trách nhiệm cao độ với nhóm. Tuy nhiên, việc thức trắng đêm khi đã kiệt sức làm giảm nghiêm trọng hiệu suất làm việc, dễ dẫn đến sai sót. Hơn nữa, nó phá hủy sức khỏe và ảnh hưởng đến năng suất của những ngày tiếp theo.',
@@ -75,6 +78,7 @@ const scenarios = [
                 title: 'Lập lại kế hoạch và làm tập trung trong 90 phút.',
                 desc: 'Đánh giá lại 30% công việc còn lại. Xác định những phần cốt lõi nhất và tập trung cao độ giải quyết chúng trong vòng 1 tiếng rưỡi tới. Sau đó sẽ đi ngủ để giữ sức, chấp nhận bài làm có thể không hoàn hảo 100% nhưng vẫn đảm bảo chất lượng cơ bản và đúng hạn.',
                 best: true,
+                impact: { resources: { progress: 10, energy: -5, money: 0 }, traits: { can: 15 } },
                 feedback: {
                     title: 'Lựa chọn tối ưu: Cần mẫn và Thông minh',
                     text: "Đây là cách tiếp cận thể hiện rõ 'Hiệu quả thực tế'. Bạn không bỏ cuộc, cũng không bào mòn bản thân vô ích. Việc đánh giá lại ưu tiên, phân bổ thời gian giới hạn và tập trung giải quyết phần cốt lõi cho thấy tư duy giải quyết vấn đề sắc bén và sự nỗ lực (Cần) đúng chỗ.",
@@ -99,6 +103,7 @@ const scenarios = [
                 title: 'Bỏ seminar đi làm để giữ ca.',
                 desc: 'Thu nhập là quan trọng nhất trước mắt. Bạn đi làm như thường lệ, tự nhủ kiến thức có thể học lại qua tài liệu, còn tiền thì không chờ ai.',
                 best: false,
+                impact: { resources: { progress: -5, energy: 5, money: 15 }, traits: { can: -10 } },
                 feedback: {
                     title: 'Ưu tiên trước mắt nhưng đánh mất cơ hội dài hạn',
                     text: "Việc bỏ lỡ seminar không chỉ mất đi kiến thức chuyên sâu, mà còn là những mối quan hệ và cảm hứng mà buổi nói chuyện mang lại. 'Cần' là lao động có kế hoạch và đầu tư cho sự phát triển lâu dài, không phải chỉ chạy theo thu nhập trước mắt.",
@@ -111,6 +116,7 @@ const scenarios = [
                 title: 'Bỏ làm đi học nhưng tiếc tiền.',
                 desc: 'Bạn vẫn quyết định dự seminar vì nhận thấy giá trị của nó, nhưng suốt buổi cứ nghĩ về số tiền đã mất và ca làm bị bỏ trống khiến đồng nghiệp phải gánh việc.',
                 best: false,
+                impact: { resources: { progress: 10, energy: -5, money: -10 }, traits: { can: 5 } },
                 feedback: {
                     title: 'Đúng hướng nhưng còn tiếc nuối',
                     text: "Quyết định đi học là đúng đắn, nhưng sự tiếc nuối và lo lắng cho thấy bạn chưa giải quyết triệt để bài toán quản lý nguồn lực. 'Cần' kết hợp với kế hoạch sẽ giúp bạn vừa có kiến thức vừa không mất thu nhập.",
@@ -123,6 +129,7 @@ const scenarios = [
                 title: 'Sắp xếp lại lịch làm bù vào cuối tuần để dự seminar.',
                 desc: 'Bạn chủ động trao đổi với quản lý, xin dời ca sang cuối tuần và nhờ đồng nghiệp hỗ trợ nếu cần. Bạn dự seminar trọn vẹn mà vẫn không mất thu nhập.',
                 best: true,
+                impact: { resources: { progress: 10, energy: -5, money: 0 }, traits: { can: 15 } },
                 feedback: {
                     title: "Lựa chọn tối ưu: Xây dựng cái 'Tài' đi đôi với cái 'Đức'",
                     text: "Bạn không đánh đổi cái này lấy cái kia mà tìm cách dung hòa cả hai. Việc dự seminar đầu tư vào năng lực ('Tài'), trong khi vẫn đảm bảo trách nhiệm với công việc và thu nhập — đó là 'Cần' hiểu đúng nghĩa: lao động có kế hoạch, biết ưu tiên và sáng tạo trong cách sắp xếp.",
@@ -147,6 +154,7 @@ const scenarios = [
                 title: 'Đi ăn vì "lâu lâu mới có".',
                 desc: 'Đây là cơ hội hiếm có, bạn tự nhủ lâu lâu mới có một lần. Ngày mai bạn sẽ tính sau.',
                 best: false,
+                impact: { resources: { progress: 0, energy: 10, money: -15 }, traits: { kiem: -10 } },
                 feedback: {
                     title: 'Tặc lưỡi cho qua dễ thành thói quen',
                     text: "Một lần 'tặc lưỡi' không đáng kể, nhưng nếu lặp lại thường xuyên, nó làm mất đi quỹ dành cho việc học. Kiệm không phải là keo kiệt, mà là biết tiết kiệm nguồn lực cho đúng mục đích quan trọng.",
@@ -159,6 +167,7 @@ const scenarios = [
                 title: 'Từ chối tuyệt đối.',
                 desc: 'Bạn từ chối thẳng và về nhà, nhưng cảm thấy bị tách khỏi bạn bè và hơi tủi thân. Sự từ chối khô khan khiến bạn khó cân bằng giữa kỷ luật và các mối quan hệ.',
                 best: false,
+                impact: { resources: { progress: 0, energy: -10, money: 10 }, traits: { kiem: 5 } },
                 feedback: {
                     title: 'Kiệm quá mức thành khắc khổ',
                     text: 'Tiết kiệm là tốt, nhưng từ chối tuyệt đối mọi cuộc vui khiến bạn trở nên khô khan và dễ đánh mất các mối quan hệ. Kiệm đúng nghĩa là tiêu dùng khôn ngoan, không phải bóp nghẹt bản thân.',
@@ -171,6 +180,7 @@ const scenarios = [
                 title: 'Ăn món vừa túi tiền để dành tiền in ấn.',
                 desc: 'Bạn vẫn tham gia cuộc vui nhưng gọi món hợp lý trong khoảng ngân sách đã đặt ra, vui vẻ bên bạn bè mà không phá vỡ kế hoạch in tài liệu.',
                 best: true,
+                impact: { resources: { progress: 5, energy: 10, money: -5 }, traits: { kiem: 15 } },
                 feedback: {
                     title: 'Lựa chọn tối ưu: Tiết kiệm nguồn lực một cách thông minh',
                     text: 'Bạn giữ được cả mối quan hệ lẫn kế hoạch tài chính. Kiệm không phải là không tiêu, mà là tiêu đúng chỗ, vừa đủ, có chủ đích. Đây chính là quản lý nguồn lực của người trưởng thành.',
@@ -195,6 +205,7 @@ const scenarios = [
                 title: 'Để nguyên vì "tiền điện của trường".',
                 desc: 'Đó là tiền của trường, của công, không phải của riêng bạn. Bạn chỉ cần rời đi cho đúng giờ là xong trách nhiệm.',
                 best: false,
+                impact: { resources: { progress: 0, energy: 0, money: -10 }, traits: { kiem: -10 } },
                 feedback: {
                     title: 'Vô trách nhiệm với của công',
                     text: 'Của công cũng là tài sản chung do chính các bạn đóng góp xây dựng. Bỏ mặc thiết bị hoạt động lãng phí cả đêm vừa tốn kém vừa gây hại cho môi trường — và là sự lãng phí mà Kiệm không cho phép.',
@@ -207,6 +218,7 @@ const scenarios = [
                 title: 'Chỉ tắt đèn chỗ mình ngồi.',
                 desc: 'Bạn tắt đèn khu vực mình ngồi rồi ra về, tự cho rằng mình đã làm đủ phần việc của mình.',
                 best: false,
+                impact: { resources: { progress: 0, energy: 0, money: -5 }, traits: { kiem: 0 } },
                 feedback: {
                     title: 'Làm qua loa, hiệu quả thấp',
                     text: 'Tắt đèn khu vực mình ngồi là tốt, nhưng nửa vời: các thiết bị khác vẫn lãng phí. Kiệm đòi hỏi cái nhìn toàn cục — tiết kiệm cho cả của công lẫn của tư, không chỉ cho riêng mình.',
@@ -219,6 +231,7 @@ const scenarios = [
                 title: 'Tắt toàn bộ thiết bị điện không cần thiết.',
                 desc: 'Bạn dành một phút tắt toàn bộ đèn, quạt và điều hòa của phòng trước khi rời đi. Thói quen nhỏ nhưng thể hiện trách nhiệm với của chung.',
                 best: true,
+                impact: { resources: { progress: 5, energy: 5, money: 5 }, traits: { kiem: 15 } },
                 feedback: {
                     title: 'Lựa chọn tối ưu: Kiệm là tiết kiệm của công lẫn của tư',
                     text: 'Hành động nhỏ nhưng thể hiện tư duy làm chủ của công như của tư. Người Kiệm không chỉ biết tiết kiệm cho bản thân mà còn biết gìn giữ tài sản chung — một phẩm chất lãnh đạo quý giá.',
@@ -243,6 +256,7 @@ const scenarios = [
                 title: 'Copy nguyên văn.',
                 desc: 'Bạn tải về và nộp nguyên xi, nghĩ rằng ai cũng làm vậy, và deadline quá gấp.',
                 best: false,
+                impact: { resources: { progress: 15, energy: 5, money: 0 }, traits: { liem: -15 } },
                 feedback: {
                     title: 'Đạo văn trắng trợn, vi phạm nghiêm trọng',
                     text: 'Copy nguyên văn là hành vi đạo văn (plagiarism) — vi phạm nghiêm trọng nhất của liêm chính học thuật. Dù không bị phát hiện ngay, nó đánh mất cơ hội học tập của chính bạn và để lại vết nhơ học thuật khi bị kiểm tra.',
@@ -255,6 +269,7 @@ const scenarios = [
                 title: 'Sửa tên biến để qua mặt tool check.',
                 desc: 'Bạn biến đổi nhẹ để qua mắt công cụ kiểm tra đạo văn, tự trấn an rằng mình đã cải tiến.',
                 best: false,
+                impact: { resources: { progress: 15, energy: 0, money: 0 }, traits: { liem: -10 } },
                 feedback: {
                     title: 'Tinh vi hơn nhưng bản chất vẫn là gian lận',
                     text: 'Sửa tên biến, thay đổi cấu trúc bề ngoài không thay đổi bản chất: ý tưởng và công sức vẫn là của người khác. Liêm không chấp nhận sự gian lận dưới bất kỳ hình thức đội lốt nào.',
@@ -267,6 +282,7 @@ const scenarios = [
                 title: 'Đọc hiểu logic và tự code lại.',
                 desc: 'Bạn dùng đoạn code như tài liệu tham khảo, đọc hiểu từng logic, rồi tự tay code lại theo cách hiểu của mình và ghi nguồn tham khảo rõ ràng.',
                 best: true,
+                impact: { resources: { progress: 10, energy: -10, money: 0 }, traits: { liem: 15 } },
                 feedback: {
                     title: 'Lựa chọn tối ưu: Liêm chính học thuật',
                     text: 'Bạn biến nguồn tham khảo thành bài học thật sự của mình. Việc tự code lại không chỉ giúp bạn hiểu sâu mà còn giữ vững tính Liêm — trung thực trong từng sản phẩm học tập. Đây là cách mượn sức mạnh của người khác để tự mình vươn lên.',
@@ -291,6 +307,7 @@ const scenarios = [
                 title: 'Lấy luôn vì "lỗi của họ".',
                 desc: 'Đó là lỗi của cô thu ngân, không phải của bạn. Bạn cất tiền đi và coi như được lộc.',
                 best: false,
+                impact: { resources: { progress: 0, energy: 5, money: 10 }, traits: { liem: -15 } },
                 feedback: {
                     title: 'Chiếm dụng tài sản người khác',
                     text: "Dù là lỗi của cô thu ngân, khoản tiền đó không thuộc về bạn. Giữ nó là chiếm đoạt tài sản của người khác dưới danh nghĩa 'lộc trời cho'. Liêm là không tham, kể cả khi không ai phát hiện.",
@@ -303,6 +320,7 @@ const scenarios = [
                 title: 'Phân vân rồi cất đi.',
                 desc: 'Bạn đứng đó phân vân vài giây, rồi quyết định cất vào ví, tự hứa lần sau sẽ không thế nữa.',
                 best: false,
+                impact: { resources: { progress: 0, energy: -5, money: 10 }, traits: { liem: -10 } },
                 feedback: {
                     title: 'Do dự nhưng vẫn chọn sai',
                     text: 'Sự phân vân cho thấy bạn biết điều đó là sai, nhưng việc vẫn cất tiền khiến bạn mang cảm giác tội lỗi và bắt đầu quen với việc nhắm mắt trước cám dỗ. Liêm đòi hỏi dứt khoát ngay trong suy nghĩ.',
@@ -315,6 +333,7 @@ const scenarios = [
                 title: 'Trả lại ngay lập tức.',
                 desc: 'Bạn gọi cô thu ngân lại và trả lại số tiền thối nhầm. Cô cảm ơn bạn với ánh mắt biết ơn, và bạn ra về với bữa ăn thanh thản.',
                 best: true,
+                impact: { resources: { progress: 5, energy: 5, money: -5 }, traits: { liem: 15 } },
                 feedback: {
                     title: 'Lựa chọn tối ưu: Liêm là không tham tiền tài',
                     text: 'Bạn giữ vững sự trong sạch ngay cả khi không ai nhìn thấy. Hành động nhỏ này không chỉ cứu cô thu ngân khỏi thiếu quỹ mà còn giúp bạn xây dựng lòng tự trọng và danh dự — tài sản quý giá nhất.',
@@ -339,6 +358,7 @@ const scenarios = [
                 title: 'Bao che, ghi Nam làm đủ.',
                 desc: 'Nam là bạn thân, bạn không muốn làm mất lòng. Bạn tự viết giúp phần của Nam và ghi tên cậu ấy như đã hoàn thành.',
                 best: false,
+                impact: { resources: { progress: 15, energy: 5, money: 0 }, traits: { chinh: -15 } },
                 feedback: {
                     title: 'Tình riêng che lấp việc chung',
                     text: 'Bao che cho Nam khiến cậu ấy không bao giờ học được tinh thần trách nhiệm, đồng thời bạn đang gian lận cho cả nhóm. Chính nghĩa là đặt việc công lên trên tình riêng, kể cả với người thân thiết.',
@@ -351,6 +371,7 @@ const scenarios = [
                 title: 'Xóa tên Nam ngay.',
                 desc: 'Tức giận, bạn xóa tên Nam khỏi danh sách thành viên và nộp bài không có cậu ấy, dù không nói chuyện thẳng với Nam.',
                 best: false,
+                impact: { resources: { progress: 10, energy: -10, money: 0 }, traits: { chinh: 5 } },
                 feedback: {
                     title: 'Đúng nguyên tắc nhưng thiếu tình người',
                     text: 'Xóa tên là hậu quả mà Nam đáng phải nhận, nhưng làm việc đó trong âm thầm, không cho Nam cơ hội sửa sai, khiến bạn trở nên cứng nhắc và mất đi người bạn. Chính đi đôi với khéo léo và công bằng.',
@@ -363,6 +384,7 @@ const scenarios = [
                 title: 'Thẳng thắn phê bình và yêu cầu Nam hoàn thành phần tối thiểu.',
                 desc: 'Bạn gọi Nam nói chuyện thẳng thắn, chỉ rõ trách nhiệm của cậu ấy và yêu cầu hoàn thành phần tối thiểu trước sáng mai, đồng thời rút ra bài học về kỷ luật nhóm.',
                 best: true,
+                impact: { resources: { progress: 10, energy: -5, money: 0 }, traits: { chinh: 15 } },
                 feedback: {
                     title: 'Lựa chọn tối ưu: Việc công trên việc tư',
                     text: 'Bạn vừa giữ nguyên tắc vừa cho bạn mình cơ hội sửa sai. Sự thẳng thắn có thể khiến Nam khó chịu lúc đầu, nhưng về lâu dài nó giúp cậu ấy trưởng thành và là thứ giữ tình bạn thật sự — một tình bạn dựa trên sự tôn trọng lẫn nhau.',
@@ -387,6 +409,7 @@ const scenarios = [
                 title: 'Giữ im lặng để không phiền phức.',
                 desc: 'Không liên quan đến mình, bạn tự nhủ im lặng là vàng để tránh rắc rối và thù hằn.',
                 best: false,
+                impact: { resources: { progress: 0, energy: 5, money: 0 }, traits: { chinh: -10 } },
                 feedback: {
                     title: 'Im lặng là tiếp tay cho sai phạm',
                     text: 'Im lặng trước dấu hiệu sai phạm trong tập thể khiến kẻ xấu có cơ hội lớn hơn. Chính nghĩa đòi hỏi dũng khí lên tiếng bảo vệ lẽ phải và tài sản chung, dù điều đó có thể khiến bạn khó xử.',
@@ -399,6 +422,7 @@ const scenarios = [
                 title: 'Rời CLB trong im lặng.',
                 desc: 'Bạn quyết định rời CLB để sạch thân, nghĩ rằng tránh xa là cách tốt nhất.',
                 best: false,
+                impact: { resources: { progress: -5, energy: 5, money: 0 }, traits: { chinh: -5 } },
                 feedback: {
                     title: 'Trốn tránh thay vì đối diện',
                     text: 'Rời đi khiến bạn thoát khỏi rắc rối trước mắt, nhưng đồng nghĩa với việc bỏ mặc tập thể đang đi sai hướng và để kẻ xấu tiếp tục. Người Chính không bỏ chạy khi chứng kiến điều sai trái.',
@@ -411,6 +435,7 @@ const scenarios = [
                 title: 'Yêu cầu Ban điều hành công khai tài chính trong buổi họp.',
                 desc: 'Bạn chuẩn bị số liệu và trình bày vấn đề trước cuộc họp CLB, yêu cầu Ban điều hành giải trình công khai các khoản chi, đồng thời đề xuất quy chế minh bạch tài chính cho CLB.',
                 best: true,
+                impact: { resources: { progress: 5, energy: -10, money: 0 }, traits: { chinh: 15 } },
                 feedback: {
                     title: 'Lựa chọn tối ưu: Chính là thẳng thắn bảo vệ lẽ phải',
                     text: 'Bạn dũng cảm lên tiếng đúng nơi, đúng lúc, đúng cách: có dữ liệu, có đề xuất cụ thể, vì lợi ích chung chứ không vì cá nhân. Đây chính là tinh thần Chính — bảo vệ lẽ phải và thúc đẩy sự minh bạch, trách nhiệm giải trình trong tập thể.',
@@ -435,6 +460,7 @@ const scenarios = [
                 title: 'Đồng ý nộp để đi ngủ.',
                 desc: 'Mọi người đã kiệt sức, lỗi thì nhỏ. Bạn đồng ý nộp bài kèm ghi chú lỗi để ai cũng được nghỉ.',
                 best: false,
+                impact: { resources: { progress: 5, energy: 15, money: 0 }, traits: { can: -5, chinh: -5 } },
                 feedback: {
                     title: 'Chấp nhận kém hoàn hảo vì mệt mỏi',
                     text: 'Hiểu được sự mệt mỏi, nhưng nộp sản phẩm có lỗi biết trước là thiếu trách nhiệm với chính thành quả của cả nhóm. Hiệu quả thực tế đòi hỏi không ngừng nâng cao chất lượng đến phút cuối khi còn khả năng.',
@@ -447,6 +473,7 @@ const scenarios = [
                 title: 'Một mình thức sửa lỗi.',
                 desc: 'Bạn bảo mọi người đi nghỉ, một mình cắm đầu sửa lỗi tới sát giờ nộp. Có thể kịp, nhưng bạn kiệt sức và một mình gánh hết trách nhiệm.',
                 best: false,
+                impact: { resources: { progress: 10, energy: -15, money: 0 }, traits: { can: 5, kiem: -5 } },
                 feedback: {
                     title: 'Tinh thần cao nhưng cách làm kém hiệu quả',
                     text: "Việc một mình gánh hết cho thấy tinh thần trách nhiệm, nhưng phân công không hợp lý: một người sửa khó có thể nhanh và chuẩn bằng cả nhóm phối hợp. 'Cần' phải đi cùng 'phương pháp' để tạo hiệu quả thực tế tốt nhất.",
@@ -459,6 +486,7 @@ const scenarios = [
                 title: 'Phân công nhanh cả nhóm cùng xử lý để đạt hiệu quả thực tế tốt nhất.',
                 desc: 'Bạn chia nhỏ lỗi thành từng phần, phân công mỗi người một mảng, cùng nhau xử lý trong 45 phút và dành 15 phút cuối kiểm tra tổng thể trước khi nộp.',
                 best: true,
+                impact: { resources: { progress: 15, energy: -5, money: 0 }, traits: { can: 10, kiem: 5, chinh: 5 } },
                 feedback: {
                     title: 'Lựa chọn tối ưu: Giao thoa các chuẩn mực trong hành động',
                     text: 'Bạn kết hợp Cần (nỗ lực đến cùng), Kiệm (không lãng phí sức lực của ai), Chính (trách nhiệm với chất lượng sản phẩm chung). Việc phân công khoa học giúp cả nhóm đạt hiệu quả thực tế tốt nhất trong khoảng thời gian giới hạn.',
@@ -483,6 +511,7 @@ const scenarios = [
                 title: 'Chọn công ty lớn để lấy danh.',
                 desc: 'Tên tuổi công ty sẽ đẹp trong hồ sơ xin việc sau này. Bạn nghĩ học chậm cũng được, quan trọng là tên tuổi.',
                 best: false,
+                impact: { resources: { progress: 5, energy: 5, money: 10 }, traits: { liem: -10 } },
                 feedback: {
                     title: 'Tham danh — vi phạm Liêm',
                     text: 'Chọn hào nhoáng bên ngoài thay vì giá trị thật là tham danh hão. Danh tiếng chỉ bền vững khi đi cùng thực lực; làm chân chạy vặt mà không học được gì sẽ khiến bạn rỗng ruột khi đối mặt với thử thách thật.',
@@ -495,6 +524,7 @@ const scenarios = [
                 title: 'Không chọn cái nào.',
                 desc: 'Bạn phân vân, sợ sai, và quyết định không chọn gì cả, chờ cơ hội hoàn hảo khác.',
                 best: false,
+                impact: { resources: { progress: -10, energy: 0, money: 0 }, traits: { can: -5 } },
                 feedback: {
                     title: 'Do dự làm lỡ mất cơ hội',
                     text: 'Đứng yên vì sợ chọn sai là lựa chọn an toàn nhất cũng là lựa chọn vô giá trị nhất. Cơ hội không chờ người do dự, và sự trưởng thành đến từ việc dám quyết định và chịu trách nhiệm với quyết định của mình.',
@@ -507,6 +537,7 @@ const scenarios = [
                 title: 'Chọn dự án cộng đồng để rèn luyện.',
                 desc: 'Bạn chọn dự án cộng đồng dù vất vả, vì biết đó là nơi mình thực sự học được nghề, rèn được bản lĩnh và tạo ra giá trị thật cho người khác.',
                 best: true,
+                impact: { resources: { progress: 10, energy: -10, money: -5 }, traits: { liem: 10, chinh: 5 } },
                 feedback: {
                     title: 'Lựa chọn tối ưu: Lấy hiệu quả thực tế làm thước đo',
                     text: "Bạn nhìn đúng bản chất: giá trị của cơ hội nằm ở điều bạn học được và tạo ra, không nằm ở cái tên. Vừa rèn được 'Tài' (năng lực thật) vừa giữ được 'Đức' (phục vụ cộng đồng) — đây là sự giao thoa trọn vẹn của Liêm và Chính trong quyết định nghề nghiệp.",
@@ -527,31 +558,109 @@ const getResultMessage = (bestCount) => {
     return 'Hành trình đạo đức là một quá trình rèn luyện, đừng nản lòng! Hãy đọc lại phần phân tích của Cố vấn để hiểu vì sao mỗi lựa chọn lại dẫn đến những kết quả khác nhau, rồi thử lại một lần nữa nhé.';
 };
 
+const getPrimaryTitle = (bestCount) => {
+    if (bestCount >= 8) return 'NGƯỜI GIỮ NGUYÊN TẮC';
+    if (bestCount >= 5) return 'NGƯỜI RÈN LUYỆN';
+    return 'NGƯỜI HỌC VIỆC';
+};
+
+const INITIAL_GAME_STATE = {
+    resources: { progress: 0, energy: 100, money: 320000 },
+    traits: { can: 0, kiem: 0, liem: 0, chinh: 0 },
+};
+
+const RESOURCE_LIMITS = {
+    progress: [0, 100],
+    energy: [0, 100],
+    money: [0, 999999],
+};
+
+const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+
+const loadInitialGameState = () => {
+    try {
+        const saved = localStorage.getItem('game_state');
+        if (saved) return JSON.parse(saved);
+    } catch (err) {
+        console.error('Không đọc được game_state từ localStorage:', err);
+    }
+    return INITIAL_GAME_STATE;
+};
+
+const applyImpact = (state, option) => {
+    const next = {
+        resources: { ...state.resources },
+        traits: { ...state.traits },
+    };
+    Object.entries(option.impact.resources).forEach(([key, value]) => {
+        const [min, max] = RESOURCE_LIMITS[key] ?? [0, 999999];
+        next.resources[key] = clamp((next.resources[key] ?? 0) + value, min, max);
+    });
+    Object.entries(option.impact.traits).forEach(([key, value]) => {
+        next.traits[key] = clamp((next.traits[key] ?? 0) + value, 0, 100);
+    });
+    return next;
+};
+
+const buildHiddenAchievements = (scenarios, answers) => {
+    const achievements = [];
+    const allLiemBest = scenarios
+        .filter((s) => s.tag === 'liem')
+        .every((s) => answers[s.id] === s.options.find((o) => o.best).id);
+    if (allLiemBest) {
+        achievements.push('Ánh Sáng Trong Bóng Tối');
+    }
+    return achievements;
+};
+
+const buildDecisions = (scenarios, answers) =>
+    scenarios.map((s) => {
+        const bestId = s.options.find((o) => o.best).id;
+        const chosenId = answers[s.id] ?? null;
+        const chosen = chosenId ? s.options.find((o) => o.id === chosenId) : null;
+        return {
+            scenario_id: s.id,
+            day: s.day,
+            tag: s.tag,
+            tag_label: s.tagLabel,
+            title: s.title,
+            selected_option: chosenId,
+            selected_option_letter: chosen ? chosen.letter : null,
+            selected_option_title: chosen ? chosen.title : null,
+            feedback_title: chosen ? chosen.feedback.title : null,
+            is_best: chosenId === bestId,
+        };
+    });
+
 const Challenge = () => {
     const navigate = useNavigate();
     const studentName = localStorage.getItem('student_name') || 'Minh';
     const [currentIndex, setCurrentIndex] = useState(0);
     const [answers, setAnswers] = useState({});
+    const [gameState, setGameState] = useState(loadInitialGameState);
     const [finished, setFinished] = useState(false);
     const [showCurtain, setShowCurtain] = useState(true);
     const [isCurtainUp, setIsCurtainUp] = useState(false);
+    const [saving, setSaving] = useState(false);
     const feedbackRef = useRef(null);
 
     const scenario = scenarios[currentIndex];
     const dayIndex = Math.floor((scenario.id - 1) / 2);
 
-    const answeredCount = Object.keys(answers).length;
     const bestCount = scenarios.reduce((sum, s) => {
         const bestId = s.options.find((o) => o.best).id;
         return answers[s.id] === bestId ? sum + 1 : sum;
     }, 0);
-    const weekProgress = Math.round((answeredCount / scenarios.length) * 100);
+    const weekProgress = gameState.resources.progress;
 
     const selected = answers[scenario.id];
     const selectedOption = selected ? scenario.options.find((o) => o.id === selected) : null;
 
     const selectOption = (optionId) => {
-        setAnswers((prev) => (prev[scenario.id] ? prev : { ...prev, [scenario.id]: optionId }));
+        if (answers[scenario.id]) return;
+        const option = scenario.options.find((o) => o.id === optionId);
+        setAnswers((prev) => ({ ...prev, [scenario.id]: optionId }));
+        setGameState((state) => applyImpact(state, option));
     };
 
     useEffect(() => {
@@ -576,17 +685,87 @@ const Challenge = () => {
         }
     }, [selected]);
 
-    const goNext = () => {
+    useEffect(() => {
+        try {
+            localStorage.setItem('game_state', JSON.stringify(gameState));
+        } catch (err) {
+            console.error('Không lưu được game_state vào localStorage:', err);
+        }
+    }, [gameState]);
+
+    const saveGameSessionToSupabase = async () => {
+        try {
+            const finalGameState = {
+                studentName,
+                resources: {
+                    progress: gameState.resources.progress,
+                    energy: gameState.resources.energy,
+                    money: gameState.resources.money,
+                },
+                traits: {
+                    can: gameState.traits.can,
+                    kiem: gameState.traits.kiem,
+                    liem: gameState.traits.liem,
+                    chinh: gameState.traits.chinh,
+                },
+                primaryTitle: getPrimaryTitle(bestCount),
+                hiddenAchievements: buildHiddenAchievements(scenarios, answers),
+                decisions: buildDecisions(scenarios, answers),
+            };
+
+            localStorage.setItem('game_result', JSON.stringify(finalGameState));
+
+            if (!supabase) {
+                console.warn('Supabase chưa được cấu hình, bỏ qua lưu lên DB.');
+                return false;
+            }
+
+            const { data, error } = await supabase
+                .from('game_sessions')
+                .insert([
+                    {
+                        student_name: finalGameState.studentName,
+                        progress: finalGameState.resources.progress,
+                        energy: finalGameState.resources.energy,
+                        money: finalGameState.resources.money,
+                        trait_can: finalGameState.traits.can,
+                        trait_kiem: finalGameState.traits.kiem,
+                        trait_liem: finalGameState.traits.liem,
+                        trait_chinh: finalGameState.traits.chinh,
+                        primary_title: finalGameState.primaryTitle,
+                        hidden_achievements: finalGameState.hiddenAchievements,
+                        decisions: finalGameState.decisions,
+                    },
+                ]);
+
+            if (error) {
+                console.error('Lỗi khi lưu dữ liệu lên Supabase:', error);
+                return false;
+            }
+            console.log('Đã lưu thành công!', data);
+            return true;
+        } catch (err) {
+            console.error('Đã xảy ra lỗi:', err);
+            return false;
+        }
+    };
+
+    const goNext = async () => {
         if (currentIndex < scenarios.length - 1) {
             setCurrentIndex(currentIndex + 1);
         } else {
-            navigate('/result');
+            if (!saving) {
+                setSaving(true);
+                await saveGameSessionToSupabase();
+                navigate('/result');
+            }
         }
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const restart = () => {
         setAnswers({});
+        setGameState(INITIAL_GAME_STATE);
         setCurrentIndex(0);
         setFinished(false);
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -633,10 +812,10 @@ const Challenge = () => {
                             <div>
                                 <div className="flex justify-between text-sm font-label-md mb-1">
                                     <span className="text-on-surface">Năng lượng</span>
-                                    <span className="text-secondary-container">45%</span>
+                                    <span className="text-secondary-container">{gameState.resources.energy}%</span>
                                 </div>
                                 <div className="status-bar-bg">
-                                    <div className="status-bar-fill-energy" style={{ width: '45%' }}></div>
+                                    <div className="status-bar-fill-energy" style={{ width: `${gameState.resources.energy}%` }}></div>
                                 </div>
                             </div>
                             <div>
@@ -653,7 +832,9 @@ const Challenge = () => {
                                     <span className="material-symbols-outlined text-[18px]">account_balance_wallet</span>
                                     <span className="font-label-md text-sm">Tài chính</span>
                                 </div>
-                                <span className="font-label-md text-sm font-bold text-primary">320.000 VNĐ</span>
+                                <span className="font-label-md text-sm font-bold text-primary">
+                                    {gameState.resources.money.toLocaleString('vi-VN')} VNĐ
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -823,8 +1004,16 @@ const Challenge = () => {
                                         </div>
                                     </div>
                                     <div className="mt-8 pt-6 border-t border-outline-variant flex justify-end">
-                                        <button onClick={goNext} className="bg-primary text-on-primary px-8 py-3 rounded font-label-md text-label-md hover:bg-primary-container transition-colors lift-hover">
-                                            {currentIndex === scenarios.length - 1 ? 'Xem kết quả hành trình' : 'Tiếp tục chặng kế'}
+                                        <button
+                                            onClick={goNext}
+                                            disabled={saving}
+                                            className="bg-primary text-on-primary px-8 py-3 rounded font-label-md text-label-md hover:bg-primary-container transition-colors lift-hover disabled:opacity-60 disabled:pointer-events-none"
+                                        >
+                                            {saving
+                                                ? 'Đang lưu kết quả...'
+                                                : currentIndex === scenarios.length - 1
+                                                ? 'Xem kết quả hành trình'
+                                                : 'Tiếp tục chặng kế'}
                                         </button>
                                     </div>
                                 </div>

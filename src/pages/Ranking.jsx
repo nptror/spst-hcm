@@ -29,7 +29,7 @@ const Ranking = () => {
                             Tổng số thành viên: {totalMembers} học viên
                         </div>
                         <h1 className="text-[32px] md:text-[40px] font-bold text-primary leading-tight tracking-tight mb-4">
-                            BẢNG VINH DANH PHONG CÁCH QUYẾT ĐỊNH
+                            BẢNG VINH DANH
                         </h1>
                         <p className="text-[18px] text-on-surface-variant leading-[28px] max-w-3xl">
                             Khám phá hồ sơ quyết định của tập thể lớp. Biểu đồ dưới đây phản ánh sự phân bổ lý tưởng các phong cách hành xử đạo đức và hiệu suất, vinh danh những cá nhân xuất sắc nhất trong từng hạng mục.
@@ -128,11 +128,10 @@ const Ranking = () => {
                             </thead>
                             <tbody className="text-[16px]">
                                 {students.map((student) => (
-                                    <tr 
-                                        key={student.rank} 
-                                        className={`border-b border-surface-variant hover:bg-surface-container-low transition-colors ${
-                                            student.isCurrentUser ? 'bg-secondary-fixed/10' : ''
-                                        }`}
+                                    <tr
+                                        key={student.rank}
+                                        className={`border-b border-surface-variant hover:bg-surface-container-low transition-colors ${student.isCurrentUser ? 'bg-secondary-fixed/10' : ''
+                                            }`}
                                     >
                                         <td className="px-6 py-4">
                                             {student.rank === 1 && (
@@ -163,12 +162,11 @@ const Ranking = () => {
                                             )}
                                         </td>
                                         <td className="px-6 py-4">
-                                            <span className={`inline-flex items-center px-3 py-1 rounded-sm text-[14px] font-semibold ${
-                                                student.rank === 1 ? 'bg-primary-container/10 text-primary-container border border-primary-container/20' :
-                                                student.rank === 2 ? 'bg-secondary-container/10 text-secondary-container border border-secondary-container/20' :
-                                                student.rank === 3 ? 'bg-surface-tint/10 text-surface-tint border border-surface-tint/20' :
-                                                'bg-outline/10 text-outline border border-outline/20'
-                                            }`}>
+                                            <span className={`inline-flex items-center px-3 py-1 rounded-sm text-[14px] font-semibold ${student.rank === 1 ? 'bg-primary-container/10 text-primary-container border border-primary-container/20' :
+                                                    student.rank === 2 ? 'bg-secondary-container/10 text-secondary-container border border-secondary-container/20' :
+                                                        student.rank === 3 ? 'bg-surface-tint/10 text-surface-tint border border-surface-tint/20' :
+                                                            'bg-outline/10 text-outline border border-outline/20'
+                                                }`}>
                                                 {student.title}
                                             </span>
                                         </td>
@@ -176,12 +174,11 @@ const Ranking = () => {
                                         <td className="px-6 py-4">
                                             <div className="flex gap-2">
                                                 {student.badges.map((badge, idx) => (
-                                                    <span 
-                                                        key={idx} 
-                                                        className={`material-symbols-outlined ${
-                                                            badge === 'visibility_off' ? 'text-secondary-container' : 
-                                                            badge === 'shield' ? 'text-primary-fixed-dim' : 'text-error'
-                                                        }`} 
+                                                    <span
+                                                        key={idx}
+                                                        className={`material-symbols-outlined ${badge === 'visibility_off' ? 'text-secondary-container' :
+                                                                badge === 'shield' ? 'text-primary-fixed-dim' : 'text-error'
+                                                            }`}
                                                         style={{ fontVariationSettings: "'FILL' 1" }}
                                                         title={badge}
                                                     >
