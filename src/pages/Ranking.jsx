@@ -1,19 +1,95 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../component/Header';
 import Footer from '../component/Footer';
+import { supabase } from '../supabaseClient';
 
 const Ranking = () => {
     const studentName = localStorage.getItem('student_name') || 'Minh';
+    const [students, setStudents] = useState([]);
+    const [totalMembers, setTotalMembers] = useState(0);
+    const [chartData, setChartData] = useState({
+        nguyenTac: { count: 0, pct: 0 },
+        viecChung: { count: 0, pct: 0 },
+        nangSuat: { count: 0, pct: 0 },
+        canBang: { count: 0, pct: 0 },
+        thucDung: { count: 0, pct: 0 }
+    });
 
-    // Simulated students data
-    const students = [
-        { rank: 1, name: studentName, title: 'Người giữ nguyên tắc', consistency: '10/10', badges: ['visibility_off', 'shield'], isCurrentUser: true },
-        { rank: 2, name: 'Nam', title: 'Chiến lược gia năng suất', consistency: '9.5/10', badges: ['swords'] },
-        { rank: 3, name: 'An', title: 'Người vì việc chung', consistency: '9/10', badges: ['visibility_off'] },
-        { rank: 4, name: 'Linh', title: 'Người cân bằng', consistency: '8.5/10', badges: ['shield'] },
-    ];
+    useEffect(() => {
+        const fetchRankings = async () => {
+            const { data, error } = await supabase
+                .from('game_sessions')
+                .select('*')
+                .order('progress', { ascending: false })
+                .order('energy', { ascending: false })
+                .limit(50);
+            
+            if (error) {
+                console.error("Lỗi khi tải bảng xếp hạng:", error);
+                setStudents([]);
+                setTotalMembers(0);
+                return;
+            }
+            
+            if (data) {
+                setTotalMembers(data.length);
+                let counts = { nguyenTac: 0, viecChung: 0, nangSuat: 0, canBang: 0, thucDung: 0 };
+                const mappedData = data.map((session, index) => {
+                    const title = session.primary_title || 'Tân binh';
+                    const lowerTitle = title.toLowerCase();
+                    if (lowerTitle.includes('nguyên tắc')) counts.nguyenTac++;
+                    else if (lowerTitle.includes('việc chung')) counts.viecChung++;
+                    else if (lowerTitle.includes('năng suất')) counts.nangSuat++;
+                    else if (lowerTitle.includes('cân bằng')) counts.canBang++;
+                    else counts.thucDung++;
 
-    const totalMembers = 24; // Total members in class
+                    const hidden = Array.isArray(session.hidden_achievements) ? session.hidden_achievements : [];
+                    const badges = hidden.map(ach => {
+                        let icon = 'star';
+                        let bgClass = 'bg-gradient-to-r from-purple-500 to-indigo-500 text-white border border-purple-400/30';
+                        
+                        if (ach === 'Ánh Sáng Trong Bóng Tối') {
+                            icon = 'lightbulb';
+                            bgClass = 'bg-gradient-to-r from-amber-400 to-orange-500 text-white border border-orange-300/30';
+                        } else if (ach === 'Deadline Slayer') {
+                            icon = 'swords';
+                            bgClass = 'bg-gradient-to-r from-red-500 to-rose-600 text-white border border-red-400/30';
+                        } else if (ach === 'Không Ai Biết') {
+                            icon = 'visibility_off';
+                            bgClass = 'bg-gradient-to-r from-slate-700 to-gray-900 text-white border border-gray-600/30';
+                        } else if (ach === 'Không Một Xu Lãng Phí') {
+                            icon = 'account_balance_wallet';
+                            bgClass = 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white border border-emerald-400/30';
+                        }
+                        
+                        return { name: ach, icon, bgClass };
+                    });
+
+                    return {
+                        rank: index + 1,
+                        name: session.student_name,
+                        title: session.primary_title || 'Tân binh',
+                        consistency: `${session.progress || 0}%`,
+                        badges: badges,
+                        isCurrentUser: session.student_name === studentName
+                    };
+                });
+                
+                const total = data.length || 1;
+                setChartData({
+                    nguyenTac: { count: counts.nguyenTac, pct: Math.round((counts.nguyenTac / total) * 100) },
+                    viecChung: { count: counts.viecChung, pct: Math.round((counts.viecChung / total) * 100) },
+                    nangSuat: { count: counts.nangSuat, pct: Math.round((counts.nangSuat / total) * 100) },
+                    canBang: { count: counts.canBang, pct: Math.round((counts.canBang / total) * 100) },
+                    thucDung: { count: counts.thucDung, pct: Math.round((counts.thucDung / total) * 100) }
+                });
+                
+                setStudents(mappedData);
+            }
+        };
+
+        fetchRankings();
+    }, [studentName]);
 
     return (
         <div className="bg-surface text-on-surface antialiased min-h-screen flex flex-col font-body-md text-body-md relative">
@@ -44,19 +120,19 @@ const Ranking = () => {
                         <div className="relative w-64 h-64 md:w-80 md:h-80 flex-shrink-0">
                             <svg className="w-full h-full transform -rotate-90 rounded-full" viewBox="0 0 32 32">
                                 <circle cx="16" cy="16" fill="#f0eded" r="16"></circle>
-                                {/* 30% Người giữ nguyên tắc */}
-                                <circle cx="16" cy="16" fill="transparent" r="16" stroke="#002147" strokeDasharray="30 100" strokeWidth="32"></circle>
-                                {/* 25% Người vì việc chung */}
-                                <circle cx="16" cy="16" fill="transparent" r="16" stroke="#fd8b00" strokeDasharray="25 100" strokeDashoffset="-30" strokeWidth="32"></circle>
-                                {/* 20% Chiến lược gia năng suất */}
-                                <circle cx="16" cy="16" fill="transparent" r="16" stroke="#aec7f6" strokeDasharray="20 100" strokeDashoffset="-55" strokeWidth="32"></circle>
-                                {/* 15% Người cân bằng */}
-                                <circle cx="16" cy="16" fill="transparent" r="16" stroke="#c4c6cf" strokeDasharray="15 100" strokeDashoffset="-75" strokeWidth="32"></circle>
-                                {/* 10% Người thực dụng */}
-                                <circle cx="16" cy="16" fill="transparent" r="16" stroke="#465f88" strokeDasharray="10 100" strokeDashoffset="-90" strokeWidth="32"></circle>
+                                {/* Người giữ nguyên tắc */}
+                                <circle cx="16" cy="16" fill="transparent" r="16" stroke="#002147" strokeDasharray={`${chartData.nguyenTac.pct} 100`} strokeWidth="32"></circle>
+                                {/* Người vì việc chung */}
+                                <circle cx="16" cy="16" fill="transparent" r="16" stroke="#fd8b00" strokeDasharray={`${chartData.viecChung.pct} 100`} strokeDashoffset={`-${chartData.nguyenTac.pct}`} strokeWidth="32"></circle>
+                                {/* Chiến lược gia năng suất */}
+                                <circle cx="16" cy="16" fill="transparent" r="16" stroke="#aec7f6" strokeDasharray={`${chartData.nangSuat.pct} 100`} strokeDashoffset={`-${chartData.nguyenTac.pct + chartData.viecChung.pct}`} strokeWidth="32"></circle>
+                                {/* Người cân bằng */}
+                                <circle cx="16" cy="16" fill="transparent" r="16" stroke="#c4c6cf" strokeDasharray={`${chartData.canBang.pct} 100`} strokeDashoffset={`-${chartData.nguyenTac.pct + chartData.viecChung.pct + chartData.nangSuat.pct}`} strokeWidth="32"></circle>
+                                {/* Người thực dụng */}
+                                <circle cx="16" cy="16" fill="transparent" r="16" stroke="#465f88" strokeDasharray={`${chartData.thucDung.pct} 100`} strokeDashoffset={`-${chartData.nguyenTac.pct + chartData.viecChung.pct + chartData.nangSuat.pct + chartData.canBang.pct}`} strokeWidth="32"></circle>
                             </svg>
                             <div className="absolute inset-0 m-auto w-3/5 h-3/5 bg-surface-container-lowest rounded-full flex items-center justify-center shadow-inner">
-                                <span className="text-[24px] font-bold text-primary">100%</span>
+                                <span className="text-[24px] font-bold text-primary">{totalMembers > 0 ? '100%' : '0%'}</span>
                             </div>
                         </div>
 
@@ -70,35 +146,35 @@ const Ranking = () => {
                                     <span className="w-4 h-4 rounded bg-[#002147] flex-shrink-0"></span>
                                     <div>
                                         <div className="text-xs text-on-surface-variant font-medium">Nguyên tắc</div>
-                                        <div className="text-sm font-bold text-primary">30% (7 HV)</div>
+                                        <div className="text-sm font-bold text-primary">{chartData.nguyenTac.pct}% ({chartData.nguyenTac.count} HV)</div>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3 p-3 bg-surface-container-low rounded border border-surface-variant/40">
                                     <span className="w-4 h-4 rounded bg-[#fd8b00] flex-shrink-0"></span>
                                     <div>
                                         <div className="text-xs text-on-surface-variant font-medium">Vì việc chung</div>
-                                        <div className="text-sm font-bold text-primary">25% (6 HV)</div>
+                                        <div className="text-sm font-bold text-primary">{chartData.viecChung.pct}% ({chartData.viecChung.count} HV)</div>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3 p-3 bg-surface-container-low rounded border border-surface-variant/40">
                                     <span className="w-4 h-4 rounded bg-[#aec7f6] flex-shrink-0"></span>
                                     <div>
                                         <div className="text-xs text-on-surface-variant font-medium">Năng suất</div>
-                                        <div className="text-sm font-bold text-primary">20% (5 HV)</div>
+                                        <div className="text-sm font-bold text-primary">{chartData.nangSuat.pct}% ({chartData.nangSuat.count} HV)</div>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3 p-3 bg-surface-container-low rounded border border-surface-variant/40">
                                     <span className="w-4 h-4 rounded bg-[#c4c6cf] flex-shrink-0"></span>
                                     <div>
                                         <div className="text-xs text-on-surface-variant font-medium">Cân bằng</div>
-                                        <div className="text-sm font-bold text-primary">15% (4 HV)</div>
+                                        <div className="text-sm font-bold text-primary">{chartData.canBang.pct}% ({chartData.canBang.count} HV)</div>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3 p-3 bg-surface-container-low rounded border border-surface-variant/40 sm:col-span-2">
                                     <span className="w-4 h-4 rounded bg-[#465f88] flex-shrink-0"></span>
                                     <div>
                                         <div className="text-xs text-on-surface-variant font-medium">Thực dụng</div>
-                                        <div className="text-sm font-bold text-primary">10% (2 HV)</div>
+                                        <div className="text-sm font-bold text-primary">{chartData.thucDung.pct}% ({chartData.thucDung.count} HV)</div>
                                     </div>
                                 </div>
                             </div>
@@ -172,19 +248,24 @@ const Ranking = () => {
                                         </td>
                                         <td className="px-6 py-4 font-medium text-primary">{student.consistency}</td>
                                         <td className="px-6 py-4">
-                                            <div className="flex gap-2">
+                                            <div className="flex gap-2 flex-wrap">
                                                 {student.badges.map((badge, idx) => (
-                                                    <span
-                                                        key={idx}
-                                                        className={`material-symbols-outlined ${badge === 'visibility_off' ? 'text-secondary-container' :
-                                                                badge === 'shield' ? 'text-primary-fixed-dim' : 'text-error'
-                                                            }`}
-                                                        style={{ fontVariationSettings: "'FILL' 1" }}
-                                                        title={badge}
+                                                    <div 
+                                                        key={idx} 
+                                                        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md shadow-sm transform transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-md cursor-default ${badge.bgClass}`}
                                                     >
-                                                        {badge}
-                                                    </span>
+                                                        <span
+                                                            className="material-symbols-outlined text-[16px]"
+                                                            style={{ fontVariationSettings: "'FILL' 1" }}
+                                                        >
+                                                            {badge.icon}
+                                                        </span>
+                                                        <span className="text-[11px] font-bold tracking-wide whitespace-nowrap uppercase">{badge.name}</span>
+                                                    </div>
                                                 ))}
+                                                {student.badges.length === 0 && (
+                                                    <span className="text-on-surface-variant/40 text-sm italic">Chưa có</span>
+                                                )}
                                             </div>
                                         </td>
                                     </tr>

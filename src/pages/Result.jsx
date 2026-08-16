@@ -240,7 +240,11 @@ const Result = () => {
                             <span className="material-symbols-outlined text-sm">leaderboard</span>
                             Bảng Xếp Hạng
                         </button>
-                        <button onClick={() => navigate('/challenge')} className="px-8 py-4 bg-surface text-secondary border border-secondary rounded font-label text-label-md uppercase tracking-widest hover:bg-secondary-fixed/10 transition-colors flex items-center justify-center gap-2 cursor-pointer">
+                        <button onClick={() => {
+                            localStorage.removeItem('game_state');
+                            localStorage.removeItem('game_result');
+                            navigate('/challenge');
+                        }} className="px-8 py-4 bg-surface text-secondary border border-secondary rounded font-label text-label-md uppercase tracking-widest hover:bg-secondary-fixed/10 transition-colors flex items-center justify-center gap-2 cursor-pointer">
                             <span className="material-symbols-outlined text-sm">replay</span>
                             Thử Thách Lại
                         </button>

@@ -206,7 +206,7 @@ const LandingPage = () => {
                                     Thực hành ngay
                                 </Link>
                                 <Link
-                                    to="/challenge"
+                                    to="/register"
                                     className="bg-secondary-container/10 text-secondary border border-secondary-container/30 font-label-md text-label-md px-6 py-3.5 rounded hover:bg-secondary-container/20 transition-all flex items-center gap-2"
                                 >
                                     <span className="material-symbols-outlined text-[18px]">psychology</span>
@@ -295,7 +295,7 @@ const LandingPage = () => {
                             </div>
                             <div className="mt-6 pt-4 border-t border-surface-variant flex justify-between items-center">
                                 <span className="text-xs text-outline font-mono">Tôn trọng tri thức</span>
-                                <Link to="/challenge" className="text-xs text-primary font-medium hover:text-secondary flex items-center gap-1">
+                                <Link to="/register" className="text-xs text-primary font-medium hover:text-secondary flex items-center gap-1">
                                     Thách thức tình huống <span className="material-symbols-outlined text-[14px]">open_in_new</span>
                                 </Link>
                             </div>
@@ -333,7 +333,7 @@ const LandingPage = () => {
                                 <h2 className="font-headline-lg text-headline-lg text-primary mt-1">Góc Nhìn & Tình Huống Đạo Đức Số</h2>
                             </div>
                             <Link
-                                to="/challenge"
+                                to="/register"
                                 className="inline-flex items-center gap-2 text-primary font-label-md hover:text-secondary transition-colors"
                             >
                                 <span>Xem tất cả tình huống</span>

@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../component/Header';
 import Footer from '../component/Footer';
+import logoImg from '../assets/logo.png';
+import { supabase } from '../supabaseClient';
 
 const InteractiveGrid = () => {
     const canvasRef = useRef(null);
@@ -82,7 +84,7 @@ const InteractiveGrid = () => {
                     opacity = 0.08 + force * 0.52;
                     radius = 1.5 + force * 1.5;
                     if (force > 0.25) {
-                        color = '#fd8b00'; 
+                        color = '#fd8b00';
                     }
                 }
 
@@ -120,17 +122,48 @@ const Register = () => {
     const [startAnimate, setStartAnimate] = useState(false);
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (name.trim()) {
-            localStorage.setItem('student_name', name.trim());
-            // Trigger close curtain animation
+            const studentName = name.trim();
+            localStorage.setItem('student_name', studentName);
+            
+            // 1. Khởi tạo dữ liệu người chơi trên Supabase để hiển thị ngay trên Ranking
+            try {
+                const { data, error } = await supabase.from('game_sessions').insert([{
+                    student_name: studentName,
+                    progress: 0,
+                    energy: 100,
+                    money: 320000,
+                    trait_can: 0,
+                    trait_kiem: 0,
+                    trait_liem: 0,
+                    trait_chinh: 0,
+                    primary_title: 'Tân binh',
+                    hidden_achievements: []
+                }]).select();
+
+                if (error) {
+                    console.error("Lỗi Supabase:", error);
+                    alert("Lỗi khi kết nối Supabase: " + error.message);
+                }
+
+                if (data && data.length > 0) {
+                    // Lưu lại ID phiên chơi để sau này hoàn thành game thì dùng lệnh update thay vì tạo mới
+                    localStorage.setItem('session_id', data[0].id);
+                }
+            } catch (err) {
+                console.error("Lỗi mạng hoặc cấu hình:", err);
+                alert("Lỗi mạng hoặc sai URL/Key Supabase: " + err.message);
+            }
+
+            // 2. Kích hoạt hiệu ứng chuyển cảnh
             setIsLeaving(true);
             setTimeout(() => {
                 setStartAnimate(true);
             }, 50);
 
-            // Navigate after animation completes
+            // 3. Chuyển trang
             setTimeout(() => {
                 navigate('/challenge');
             }, 1050);
@@ -143,15 +176,13 @@ const Register = () => {
                 <div className="fixed inset-0 z-[100] pointer-events-none select-none">
                     {/* Orange layer */}
                     <div
-                        className={`curtain-layer absolute inset-0 bg-secondary-container z-10 ${
-                            startAnimate ? 'curtain-down-back' : 'curtain-up-back'
-                        }`}
+                        className={`curtain-layer absolute inset-0 bg-secondary-container z-10 ${startAnimate ? 'curtain-down-back' : 'curtain-up-back'
+                            }`}
                     ></div>
                     {/* Navy layer */}
                     <div
-                        className={`curtain-layer absolute inset-0 bg-primary-container z-20 flex items-center justify-center ${
-                            startAnimate ? 'curtain-down-main' : 'curtain-up-main'
-                        }`}
+                        className={`curtain-layer absolute inset-0 bg-primary-container z-20 flex items-center justify-center ${startAnimate ? 'curtain-down-main' : 'curtain-up-main'
+                            }`}
                     >
                         <div className="text-on-primary font-headline-md text-xl tracking-wider animate-pulse">
                             Đang mở thử thách...
@@ -160,7 +191,7 @@ const Register = () => {
                 </div>
             )}
             <Header />
-            
+
             <div className="min-h-[90vh] flex-grow flex items-center justify-center overflow-hidden relative w-full py-12 md:py-16">
                 {/* Decorative Background Elements */}
                 <InteractiveGrid />
@@ -171,11 +202,7 @@ const Register = () => {
                 <main className="page-entrance relative z-10 w-full max-w-2xl px-6 flex flex-col items-center text-center">
                     {/* Logo / Icon */}
                     <div className="mb-8 w-24 h-24 md:w-32 md:h-32 rounded-lg bg-surface-container-lowest shadow-sm flex items-center justify-center overflow-hidden border border-surface-variant p-2">
-                        <img
-                            alt="Ethos Academy Logo"
-                            className="w-full h-full object-contain"
-                            src="https://lh3.googleusercontent.com/aida/AP1WRLvk2vE76UbF_OdyVVzbpZXbd6F79bM2Ijl_vliLfPecGElfrKoY_D4LT0v7-cI-_Pyx1WTPSWKc8FlAnkjc8HUKxLIaa0bwoX3n7dlC75OTlxCvhTPm3jyNpr88hJOR7poWgc40rKPEbgQML_rmS352aLGZ4NI7JVTpBDdokXX0_PFGPcrLlwj837mxBrrrnMQaFzPN29rP73bPnzxGCKetNUEcJrX5epTMb9d9hW3oKx1sX96QyC5P9qk"
-                        />
+                        <img src={logoImg} alt="Logo" className="w-full h-full object-contain" />
                     </div>
 
                     {/* Greeting */}
@@ -223,7 +250,7 @@ const Register = () => {
                     </div>
                 </main>
             </div>
-            
+
             <Footer />
         </div>
     );

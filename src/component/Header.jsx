@@ -15,7 +15,7 @@ const Header = () => {
                 <nav className="hidden md:flex gap-gutter">
                     <NavLink end to="/" className={navLinkClass}>Triết lý</NavLink>
                     <Link to="/#norms" className="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md hover:bg-surface-container-low transition-all px-3 py-2 rounded">4 Chuẩn mực</Link>
-                    <NavLink to="/challenge" className={navLinkClass}>Thách thức</NavLink>
+                    <NavLink to="/register" className={navLinkClass}>Thách thức</NavLink>
                     <NavLink to="/practice" className={navLinkClass}>Rèn luyện</NavLink>
                 </nav>
                 <Link to="/register" className="bg-primary text-on-primary px-6 py-2 rounded font-label-md text-label-md hover:opacity-90 transition-opacity">Bắt đầu</Link>
