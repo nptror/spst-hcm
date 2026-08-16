@@ -752,7 +752,7 @@ const Challenge = () => {
 
             const sessionId = localStorage.getItem('session_id');
             let data, error;
-            
+
             if (sessionId) {
                 // Đã có phiên chơi (từ trang Đăng ký), tiến hành cập nhật
                 const response = await supabase
@@ -811,15 +811,13 @@ const Challenge = () => {
                 <div className="fixed inset-0 z-[100] pointer-events-none select-none">
                     {/* Orange layer - slides up second (has delay) */}
                     <div
-                        className={`curtain-layer absolute inset-0 bg-secondary-container z-10 ${
-                            isCurtainUp ? 'curtain-up-back' : ''
-                        }`}
+                        className={`curtain-layer absolute inset-0 bg-secondary-container z-10 ${isCurtainUp ? 'curtain-up-back' : ''
+                            }`}
                     ></div>
                     {/* Navy layer - slides up first (no delay) */}
                     <div
-                        className={`curtain-layer absolute inset-0 bg-primary-container z-20 shadow-2xl flex items-center justify-center ${
-                            isCurtainUp ? 'curtain-up-main' : ''
-                        }`}
+                        className={`curtain-layer absolute inset-0 bg-primary-container z-20 shadow-2xl flex items-center justify-center ${isCurtainUp ? 'curtain-up-main' : ''
+                            }`}
                     >
                         <div className="text-on-primary font-headline-md text-xl tracking-wider animate-pulse">
                             Đang mở thử thách...
@@ -873,28 +871,7 @@ const Challenge = () => {
                         </div>
                     </div>
 
-                    {/* Test Traits UI */}
-                    <div className="p-6 bg-surface-container-low border border-outline-variant rounded flex flex-col gap-4">
-                        <h3 className="font-headline-md text-sm font-bold text-primary uppercase">Chỉ số Phẩm chất (Test)</h3>
-                        <div className="grid grid-cols-2 gap-3">
-                            <div className="flex justify-between items-center bg-surface p-2 rounded border border-outline-variant">
-                                <span className="text-xs font-bold text-on-surface-variant">CẦN</span>
-                                <span className="text-sm font-bold text-secondary">{gameState.traits.can}</span>
-                            </div>
-                            <div className="flex justify-between items-center bg-surface p-2 rounded border border-outline-variant">
-                                <span className="text-xs font-bold text-on-surface-variant">KIỆM</span>
-                                <span className="text-sm font-bold text-secondary">{gameState.traits.kiem}</span>
-                            </div>
-                            <div className="flex justify-between items-center bg-surface p-2 rounded border border-outline-variant">
-                                <span className="text-xs font-bold text-on-surface-variant">LIÊM</span>
-                                <span className="text-sm font-bold text-secondary">{gameState.traits.liem}</span>
-                            </div>
-                            <div className="flex justify-between items-center bg-surface p-2 rounded border border-outline-variant">
-                                <span className="text-xs font-bold text-on-surface-variant">CHÍNH</span>
-                                <span className="text-sm font-bold text-secondary">{gameState.traits.chinh}</span>
-                            </div>
-                        </div>
-                    </div>
+
 
                     {/* Story Progress */}
                     <div>
@@ -909,11 +886,10 @@ const Challenge = () => {
                                         <div className={`absolute left-[11px] w-[2px] bg-outline-variant ${dayIdx === 0 ? 'top-7' : 'top-0'} bottom-0`}></div>
                                         <div className="flex items-start gap-4 relative z-10">
                                             <div
-                                                className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
-                                                    dayActive || dayCompleted
+                                                className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${dayActive || dayCompleted
                                                         ? 'bg-secondary-container border-secondary-container'
                                                         : 'bg-surface border-outline-variant'
-                                                }`}
+                                                    }`}
                                             >
                                                 {dayCompleted && (
                                                     <span className="material-symbols-outlined text-[12px] text-on-primary" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>
@@ -933,11 +909,10 @@ const Challenge = () => {
                                                 return (
                                                     <div key={sid} className="relative">
                                                         <div
-                                                            className={`absolute -left-[12px] top-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-2 transition-colors ${
-                                                                mActive || mCompleted
+                                                            className={`absolute -left-[12px] top-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-2 transition-colors ${mActive || mCompleted
                                                                     ? 'bg-secondary-container border-secondary-container'
                                                                     : 'bg-surface border-outline-variant'
-                                                            }`}
+                                                                }`}
                                                         ></div>
                                                         <div className="pl-3">
                                                             <p className={`text-xs font-semibold ${mActive ? 'text-secondary' : mCompleted ? 'text-on-surface' : 'text-on-surface-variant'}`}>Tình huống {m + 1}</p>
@@ -1025,24 +1000,22 @@ const Challenge = () => {
                                         <button
                                             key={opt.id}
                                             onClick={() => selectOption(opt.id)}
-                                            className={`lift-hover w-full text-left p-6 bg-surface border rounded flex gap-4 items-start group transition-colors ${
-                                                isDisabled
+                                            className={`lift-hover w-full text-left p-6 bg-surface border rounded flex gap-4 items-start group transition-colors ${isDisabled
                                                     ? isSelected
                                                         ? opt.best
                                                             ? 'border-primary bg-[#F4F7FA]'
                                                             : 'border-surface-tint bg-[#F6F3F2]'
                                                         : 'opacity-50 pointer-events-none border-outline-variant'
                                                     : 'border-outline-variant'
-                                            }`}
+                                                }`}
                                         >
                                             <div
-                                                className={`w-8 h-8 rounded-full border flex items-center justify-center flex-shrink-0 mt-1 transition-colors ${
-                                                    isSelected
+                                                className={`w-8 h-8 rounded-full border flex items-center justify-center flex-shrink-0 mt-1 transition-colors ${isSelected
                                                         ? opt.best
                                                             ? 'bg-primary text-on-primary border-primary'
                                                             : 'bg-surface-tint text-on-primary border-surface-tint'
                                                         : 'border-outline-variant group-hover:border-primary'
-                                                }`}
+                                                    }`}
                                             >
                                                 <span className="font-label-md text-label-md">{opt.letter}</span>
                                             </div>
@@ -1079,8 +1052,8 @@ const Challenge = () => {
                                             {saving
                                                 ? 'Đang lưu kết quả...'
                                                 : currentIndex === scenarios.length - 1
-                                                ? 'Xem kết quả hành trình'
-                                                : 'Tiếp tục chặng kế'}
+                                                    ? 'Xem kết quả hành trình'
+                                                    : 'Tiếp tục chặng kế'}
                                         </button>
                                     </div>
                                 </div>
