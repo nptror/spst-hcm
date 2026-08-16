@@ -127,6 +127,8 @@ const Register = () => {
         if (name.trim()) {
             const studentName = name.trim();
             localStorage.setItem('student_name', studentName);
+            localStorage.removeItem('game_state');
+            localStorage.removeItem('game_result');
             
             // 1. Khởi tạo dữ liệu người chơi trên Supabase để hiển thị ngay trên Ranking
             try {

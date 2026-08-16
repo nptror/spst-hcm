@@ -89,6 +89,24 @@ const Ranking = () => {
         };
 
         fetchRankings();
+
+        // Thiết lập Realtime Subscription
+        const channel = supabase
+            .channel('realtime_game_sessions')
+            .on(
+                'postgres_changes',
+                { event: '*', schema: 'public', table: 'game_sessions' },
+                (payload) => {
+                    console.log('Cập nhật bảng xếp hạng realtime:', payload);
+                    fetchRankings();
+                }
+            )
+            .subscribe();
+
+        // Cleanup channel khi component unmount
+        return () => {
+            supabase.removeChannel(channel);
+        };
     }, [studentName]);
 
     return (

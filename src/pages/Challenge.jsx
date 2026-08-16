@@ -594,7 +594,9 @@ const applyImpact = (state, option) => {
     };
     Object.entries(option.impact.resources).forEach(([key, value]) => {
         const [min, max] = RESOURCE_LIMITS[key] ?? [0, 999999];
-        next.resources[key] = clamp((next.resources[key] ?? 0) + value, min, max);
+        // Nhân 1000 với tiền để khớp với đơn vị hàng nghìn (VD: -15 -> -15000 VNĐ)
+        const actualValue = key === 'money' ? value * 1000 : value;
+        next.resources[key] = clamp((next.resources[key] ?? 0) + actualValue, min, max);
     });
     Object.entries(option.impact.traits).forEach(([key, value]) => {
         next.traits[key] = clamp((next.traits[key] ?? 0) + value, 0, 100);
