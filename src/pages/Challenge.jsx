@@ -642,7 +642,22 @@ const Challenge = () => {
     const [showCurtain, setShowCurtain] = useState(true);
     const [isCurtainUp, setIsCurtainUp] = useState(false);
     const [saving, setSaving] = useState(false);
+    const [showTutorial, setShowTutorial] = useState(false);
+    const [isClosingTutorial, setIsClosingTutorial] = useState(false);
     const feedbackRef = useRef(null);
+
+    const handleOpenTutorial = () => {
+        setIsClosingTutorial(false);
+        setShowTutorial(true);
+    };
+
+    const handleCloseTutorial = () => {
+        setIsClosingTutorial(true);
+        setTimeout(() => {
+            setShowTutorial(false);
+            setIsClosingTutorial(false);
+        }, 280);
+    };
 
     const scenario = scenarios[currentIndex];
     const dayIndex = Math.floor((scenario.id - 1) / 2);
@@ -671,6 +686,7 @@ const Challenge = () => {
 
         const timer2 = setTimeout(() => {
             setShowCurtain(false);
+            setShowTutorial(true);
         }, 1100);
 
         return () => {
@@ -967,7 +983,17 @@ const Challenge = () => {
                                 <div className="flex items-center gap-3">
                                     <span className={`ethics-tag ${scenario.tag}`}>{scenario.tagLabel}</span>
                                     <span className="font-label-md text-label-md text-on-surface-variant">{scenario.timeLabel}</span>
-                                    <span className="ml-auto font-label-md text-label-md text-surface-tint">Tình huống {currentIndex + 1}/{scenarios.length}</span>
+                                    <div className="ml-auto flex items-center gap-3">
+                                        <button
+                                            onClick={handleOpenTutorial}
+                                            className="flex items-center gap-1 text-xs font-semibold text-secondary-container hover:text-on-secondary-container bg-secondary-container/10 hover:bg-secondary-container/20 px-2.5 py-1 rounded border border-secondary-container/30 transition-all cursor-pointer"
+                                            title="Xem lại hướng dẫn người chơi"
+                                        >
+                                            <span className="material-symbols-outlined text-[16px]">help_outline</span>
+                                            <span>Hướng dẫn</span>
+                                        </button>
+                                        <span className="font-label-md text-label-md text-surface-tint">Tình huống {currentIndex + 1}/{scenarios.length}</span>
+                                    </div>
                                 </div>
                                 <h1 className="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary">{scenario.title}</h1>
                                 <div className="relative w-full h-[300px] overflow-hidden rounded mb-4 bg-surface-container-low">
@@ -1063,6 +1089,136 @@ const Challenge = () => {
                     )}
                 </section>
             </main>
+
+            {/* Pop-up Tutorial Modal */}
+            {showTutorial && (
+                <div className={`fixed inset-0 z-[120] flex items-center justify-center p-4 bg-primary/80 backdrop-blur-md ${isClosingTutorial ? 'modal-backdrop-exit' : 'modal-backdrop-animate'}`}>
+                    <div className={`bg-surface-container-lowest border border-outline-variant rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto flex flex-col relative ${isClosingTutorial ? 'modal-content-exit' : 'modal-content-animate'}`}>
+                        {/* Modal Header */}
+                        <div className="bg-gradient-to-r from-primary-container to-[#0b1b36] text-on-primary p-6 rounded-t-2xl relative overflow-hidden flex flex-col gap-2">
+                            <div className="absolute top-0 right-0 w-48 h-48 bg-secondary-container/20 rounded-full blur-2xl pointer-events-none"></div>
+                            <div className="flex items-center justify-between relative z-10">
+                                <div className="flex items-center gap-2">
+                                    <span className="material-symbols-outlined text-secondary-container text-2xl">sports_esports</span>
+                                    <span className="font-label-md text-xs uppercase tracking-widest text-secondary-container font-bold">HƯỚNG DẪN THỬ THÁCH</span>
+                                </div>
+                                <button
+                                    onClick={handleCloseTutorial}
+                                    className="text-on-primary/70 hover:text-on-primary hover:bg-white/10 p-1.5 rounded-full transition-colors cursor-pointer"
+                                    title="Đóng"
+                                >
+                                    <span className="material-symbols-outlined text-xl">close</span>
+                                </button>
+                            </div>
+                            <h2 className="font-headline text-2xl font-bold text-white relative z-10">
+                                Chào mừng <span className="text-secondary-container">{studentName}</span> đến với Thử thách!
+                            </h2>
+                            <p className="text-sm text-on-primary-container relative z-10 leading-relaxed">
+                                Trước khi bắt đầu hành trình 5 ngày rèn luyện, hãy cùng tìm hiểu mục tiêu và lối chơi nhé.
+                            </p>
+                        </div>
+
+                        {/* Modal Body */}
+                        <div className="p-6 flex flex-col gap-6 font-body text-on-surface">
+                            {/* Section 1: Mục tiêu */}
+                            <div className="flex flex-col gap-3 bg-surface-container-low p-4 rounded-xl border border-outline-variant/60">
+                                <div className="flex items-center gap-2 text-primary font-bold font-headline text-lg">
+                                    <span className="material-symbols-outlined text-secondary-container">flag</span>
+                                    <h3>1. Mục tiêu hành trình</h3>
+                                </div>
+                                <p className="text-sm text-on-surface-variant leading-relaxed">
+                                    Vận dụng linh hoạt các chuẩn mực đạo đức Hồ Chí Minh <strong className="text-primary font-semibold">Cần - Kiệm - Liêm - Chính</strong> để xử lý các tình huống thực tế trong học tập và cuộc sống sinh viên.
+                                </p>
+                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+                                    <div className="bg-surface p-2.5 rounded-lg border border-outline-variant text-center">
+                                        <span className="block text-xs font-bold text-primary uppercase">Cần</span>
+                                        <span className="text-[11px] text-on-surface-variant">Chăm chỉ, khoa học</span>
+                                    </div>
+                                    <div className="bg-surface p-2.5 rounded-lg border border-outline-variant text-center">
+                                        <span className="block text-xs font-bold text-primary uppercase">Kiệm</span>
+                                        <span className="text-[11px] text-on-surface-variant">Tiết kiệm công & tư</span>
+                                    </div>
+                                    <div className="bg-surface p-2.5 rounded-lg border border-outline-variant text-center">
+                                        <span className="block text-xs font-bold text-primary uppercase">Liêm</span>
+                                        <span className="text-[11px] text-on-surface-variant">Trong sạch, minh bạch</span>
+                                    </div>
+                                    <div className="bg-surface p-2.5 rounded-lg border border-outline-variant text-center">
+                                        <span className="block text-xs font-bold text-primary uppercase">Chính</span>
+                                        <span className="text-[11px] text-on-surface-variant">Thẳng thắn, công tâm</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Section 2: Lối chơi */}
+                            <div className="flex flex-col gap-3 bg-surface-container-low p-4 rounded-xl border border-outline-variant/60">
+                                <div className="flex items-center gap-2 text-primary font-bold font-headline text-lg">
+                                    <span className="material-symbols-outlined text-secondary-container">style</span>
+                                    <h3>2. Lối chơi & Quy tắc</h3>
+                                </div>
+
+                                <div className="space-y-3 text-sm text-on-surface-variant">
+                                    <div className="flex items-start gap-3">
+                                        <div className="w-7 h-7 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                                            1
+                                        </div>
+                                        <div>
+                                            <strong className="text-on-surface font-semibold">10 Tình huống trong 5 Ngày:</strong> Bạn sẽ đi qua các thử thách từ Thứ Hai đến Thứ Sáu đại diện cho đời sống học đường.
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-start gap-3">
+                                        <div className="w-7 h-7 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                                            2
+                                        </div>
+                                        <div>
+                                            <strong className="text-on-surface font-semibold">Đưa ra Lựa chọn (A, B, C):</strong> Đọc kỹ bối cảnh và chọn 1 trong 3 giải pháp xử lý. Mỗi lựa chọn đều phản ánh góc nhìn đạo đức khác nhau.
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-start gap-3">
+                                        <div className="w-7 h-7 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                                            3
+                                        </div>
+                                        <div>
+                                            <strong className="text-on-surface font-semibold">Tác động Chỉ số:</strong> Quyết định của bạn sẽ trực tiếp thay đổi:
+                                            <ul className="list-disc list-inside mt-1 pl-1 text-xs space-y-1 text-on-surface-variant">
+                                                <li><span className="font-semibold text-secondary-container">Năng lượng (%):</span> Sức khỏe & tinh thần cá nhân.</li>
+                                                <li><span className="font-semibold text-surface-tint">Tiến độ tuần (%):</span> Mức độ hoàn thành mục tiêu.</li>
+                                                <li><span className="font-semibold text-primary">Tài chính (VNĐ):</span> Quản lý chi tiêu sinh viên.</li>
+                                                <li><span className="font-semibold text-secondary">Chỉ số Phẩm chất:</span> Tích lũy điểm Cần - Kiệm - Liêm - Chính.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-start gap-3">
+                                        <div className="w-7 h-7 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                                            4
+                                        </div>
+                                        <div>
+                                            <strong className="text-on-surface font-semibold">Nhận Phân tích Cố vấn:</strong> Sau mỗi lựa chọn, xem bài học rút ra từ Cố vấn để đúc kết kinh nghiệm cho bản thân.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Modal Footer */}
+                        <div className="p-6 bg-surface-container-low border-t border-outline-variant/60 rounded-b-2xl flex items-center justify-between gap-4">
+                            <span className="text-xs text-on-surface-variant italic hidden sm:inline-block">
+                                * Có thể mở lại bất cứ lúc nào qua nút "Hướng dẫn" trên trang.
+                            </span>
+                            <button
+                                onClick={handleCloseTutorial}
+                                className="w-full sm:w-auto ml-auto bg-secondary-container hover:bg-[#e67e00] text-on-secondary-container font-headline font-bold text-base py-3 px-8 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer lift-hover"
+                            >
+                                Sẵn sàng & Bắt đầu ngay
+                                <span className="material-symbols-outlined text-xl">play_arrow</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <Footer />
         </div>
     );

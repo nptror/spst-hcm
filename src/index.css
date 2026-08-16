@@ -136,6 +136,69 @@
     animation: pageEntrance 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 
+  @keyframes modalBackdropFade {
+    from {
+      opacity: 0;
+      backdrop-filter: blur(0px);
+    }
+    to {
+      opacity: 1;
+      backdrop-filter: blur(12px);
+    }
+  }
+
+  @keyframes modalContentPop {
+    0% {
+      opacity: 0;
+      transform: scale(0.9) translateY(24px);
+    }
+    65% {
+      transform: scale(1.015) translateY(-2px);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  @keyframes modalBackdropFadeOut {
+    from {
+      opacity: 1;
+      backdrop-filter: blur(12px);
+    }
+    to {
+      opacity: 0;
+      backdrop-filter: blur(0px);
+    }
+  }
+
+  @keyframes modalContentPopOut {
+    from {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: scale(0.94) translateY(18px);
+    }
+  }
+
+  .modal-backdrop-animate {
+    animation: modalBackdropFade 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .modal-content-animate {
+    animation: modalContentPop 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .modal-backdrop-exit {
+    animation: modalBackdropFadeOut 0.3s cubic-bezier(0.7, 0, 0.84, 0) forwards;
+  }
+
+  .modal-content-exit {
+    animation: modalContentPopOut 0.3s cubic-bezier(0.7, 0, 0.84, 0) forwards;
+  }
+
   .curtain-layer {
     transition: transform 0.85s cubic-bezier(0.85, 0, 0.15, 1);
   }
