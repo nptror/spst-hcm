@@ -154,7 +154,7 @@ const scenarios = [
                 title: 'Đi ăn vì "lâu lâu mới có".',
                 desc: 'Đây là cơ hội hiếm có, bạn tự nhủ lâu lâu mới có một lần. Ngày mai bạn sẽ tính sau.',
                 best: false,
-                impact: { resources: { progress: 0, energy: 10, money: -15 }, traits: { kiem: -20 } },
+                impact: { resources: { progress: 0, energy: 10, money: -100 }, traits: { kiem: -20 } },
                 feedback: {
                     title: 'Tặc lưỡi cho qua dễ thành thói quen',
                     text: "Một lần 'tặc lưỡi' không đáng kể, nhưng nếu lặp lại thường xuyên, nó làm mất đi quỹ dành cho việc học. Kiệm không phải là keo kiệt, mà là biết tiết kiệm nguồn lực cho đúng mục đích quan trọng.",
@@ -167,7 +167,7 @@ const scenarios = [
                 title: 'Từ chối tuyệt đối.',
                 desc: 'Bạn từ chối thẳng và về nhà, nhưng cảm thấy bị tách khỏi bạn bè và hơi tủi thân. Sự từ chối khô khan khiến bạn khó cân bằng giữa kỷ luật và các mối quan hệ.',
                 best: false,
-                impact: { resources: { progress: 0, energy: -10, money: 10 }, traits: { kiem: 10 } },
+                impact: { resources: { progress: 0, energy: -10, money: 0 }, traits: { kiem: 10 } },
                 feedback: {
                     title: 'Kiệm quá mức thành khắc khổ',
                     text: 'Tiết kiệm là tốt, nhưng từ chối tuyệt đối mọi cuộc vui khiến bạn trở nên khô khan và dễ đánh mất các mối quan hệ. Kiệm đúng nghĩa là tiêu dùng khôn ngoan, không phải bóp nghẹt bản thân.',
@@ -180,7 +180,7 @@ const scenarios = [
                 title: 'Ăn món vừa túi tiền để dành tiền in ấn.',
                 desc: 'Bạn vẫn tham gia cuộc vui nhưng gọi món hợp lý trong khoảng ngân sách đã đặt ra, vui vẻ bên bạn bè mà không phá vỡ kế hoạch in tài liệu.',
                 best: true,
-                impact: { resources: { progress: 5, energy: 10, money: -5 }, traits: { kiem: 35 } },
+                impact: { resources: { progress: 5, energy: 10, money: -30 }, traits: { kiem: 35 } },
                 feedback: {
                     title: 'Lựa chọn tối ưu: Tiết kiệm nguồn lực một cách thông minh',
                     text: 'Bạn giữ được cả mối quan hệ lẫn kế hoạch tài chính. Kiệm không phải là không tiêu, mà là tiêu đúng chỗ, vừa đủ, có chủ đích. Đây chính là quản lý nguồn lực của người trưởng thành.',
