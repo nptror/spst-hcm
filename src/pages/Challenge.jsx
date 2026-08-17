@@ -298,7 +298,7 @@ const scenarios = [
         tagLabel: 'Liêm',
         timeLabel: 'Thứ Tư - 12:30',
         title: '50.000đ thối nhầm ở canteen',
-        situation: 'Giờ nghỉ trưa, bạn đang đói cồn cào và mua một bữa ăn ở canteen. Cô thu ngân vội vàng thối nhầm cho bạn nhiều hơn 50.000đ. Xung quanh đông đúc, không ai để ý. Số tiền ấy đúng bằng một bữa ăn ngon hơn mà bạn đang thèm.',
+        situation: 'Giờ nghỉ trưa, bạn đang đói cồn cào và mua một bữa ăn ở canteen 30.000đ. Cô thu ngân vội vàng thối nhầm cho bạn nhiều hơn 50.000đ. Xung quanh đông đúc, không ai để ý. Số tiền ấy đúng bằng một bữa ăn ngon hơn mà bạn đang thèm.',
         visual: { gradient: 'from-[#603100] to-[#904d00]', icon: 'account_balance_wallet' },
         options: [
             {
@@ -307,7 +307,7 @@ const scenarios = [
                 title: 'Lấy luôn vì "lỗi của họ".',
                 desc: 'Đó là lỗi của cô thu ngân, không phải của bạn. Bạn cất tiền đi và coi như được lộc.',
                 best: false,
-                impact: { resources: { progress: 0, energy: 5, money: 10 }, traits: { liem: -30 } },
+                impact: { resources: { progress: 0, energy: 5, money: 50 }, traits: { liem: -30 } },
                 feedback: {
                     title: 'Chiếm dụng tài sản người khác',
                     text: "Dù là lỗi của cô thu ngân, khoản tiền đó không thuộc về bạn. Giữ nó là chiếm đoạt tài sản của người khác dưới danh nghĩa 'lộc trời cho'. Liêm là không tham, kể cả khi không ai phát hiện.",
@@ -320,7 +320,7 @@ const scenarios = [
                 title: 'Phân vân rồi cất đi.',
                 desc: 'Bạn đứng đó phân vân vài giây, rồi quyết định cất vào ví, tự hứa lần sau sẽ không thế nữa.',
                 best: false,
-                impact: { resources: { progress: 0, energy: -5, money: 10 }, traits: { liem: -10 } },
+                impact: { resources: { progress: 0, energy: -5, money: 50 }, traits: { liem: -10 } },
                 feedback: {
                     title: 'Do dự nhưng vẫn chọn sai',
                     text: 'Sự phân vân cho thấy bạn biết điều đó là sai, nhưng việc vẫn cất tiền khiến bạn mang cảm giác tội lỗi và bắt đầu quen với việc nhắm mắt trước cám dỗ. Liêm đòi hỏi dứt khoát ngay trong suy nghĩ.',
@@ -333,7 +333,7 @@ const scenarios = [
                 title: 'Trả lại ngay lập tức.',
                 desc: 'Bạn gọi cô thu ngân lại và trả lại số tiền thối nhầm. Cô cảm ơn bạn với ánh mắt biết ơn, và bạn ra về với bữa ăn thanh thản.',
                 best: true,
-                impact: { resources: { progress: 5, energy: 5, money: -5 }, traits: { liem: 40 } },
+                impact: { resources: { progress: 5, energy: 5, money: 30 }, traits: { liem: 40 } },
                 feedback: {
                     title: 'Lựa chọn tối ưu: Liêm là không tham tiền tài',
                     text: 'Bạn giữ vững sự trong sạch ngay cả khi không ai nhìn thấy. Hành động nhỏ này không chỉ cứu cô thu ngân khỏi thiếu quỹ mà còn giúp bạn xây dựng lòng tự trọng và danh dự — tài sản quý giá nhất.',
@@ -617,7 +617,7 @@ const applyImpact = (state, option) => {
 
 const buildHiddenAchievements = (scenarios, answers, state) => {
     const achievements = [];
-    
+
     const isBest = (id) => {
         const s = scenarios.find((x) => x.id === id);
         if (!s) return false;

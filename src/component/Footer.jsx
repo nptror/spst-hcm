@@ -53,7 +53,7 @@ const Footer = () => {
                     </p>
                     <div className="flex items-center gap-1 text-xs text-outline">
                         <span className="material-symbols-outlined text-[14px] text-secondary" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
-                        Xây dựng với tâm huyết bởi sinh viên SPST HCM
+                        Xây dựng với tâm huyết bởi sinh viên FPTU HCM
                     </div>
                 </div>
             </div>
