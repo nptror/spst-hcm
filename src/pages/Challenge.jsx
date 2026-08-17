@@ -566,7 +566,7 @@ const getPrimaryTitle = (bestCount) => {
 
 const INITIAL_GAME_STATE = {
     resources: { progress: 0, energy: 100, money: 320000 },
-    traits: { can: 0, kiem: 0, liem: 0, chinh: 0 },
+    traits: { can: 100, kiem: 100, liem: 100, chinh: 100 },
 };
 
 const RESOURCE_LIMITS = {
@@ -580,7 +580,17 @@ const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 const loadInitialGameState = () => {
     try {
         const saved = localStorage.getItem('game_state');
-        if (saved) return JSON.parse(saved);
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            if (parsed && parsed.traits) {
+                // Tự động nâng cấp các traits cũ khởi đầu từ 0 sang 100
+                const allZero = Object.values(parsed.traits).every((v) => v === 0);
+                if (allZero) {
+                    parsed.traits = { can: 100, kiem: 100, liem: 100, chinh: 100 };
+                }
+            }
+            return parsed;
+        }
     } catch (err) {
         console.error('Không đọc được game_state từ localStorage:', err);
     }
@@ -599,19 +609,62 @@ const applyImpact = (state, option) => {
         next.resources[key] = clamp((next.resources[key] ?? 0) + actualValue, min, max);
     });
     Object.entries(option.impact.traits).forEach(([key, value]) => {
-        next.traits[key] = clamp((next.traits[key] ?? 0) + value, 0, 100);
+        // Bắt đầu từ 100 rồi cộng giá trị impact (impact âm sẽ tự động trừ đi, impact dương cộng lại tối đa 100)
+        next.traits[key] = clamp((next.traits[key] ?? 100) + value, 0, 100);
     });
     return next;
 };
 
-const buildHiddenAchievements = (scenarios, answers) => {
+const buildHiddenAchievements = (scenarios, answers, state) => {
     const achievements = [];
-    const allLiemBest = scenarios
-        .filter((s) => s.tag === 'liem')
-        .every((s) => answers[s.id] === s.options.find((o) => o.best).id);
-    if (allLiemBest) {
+    
+    const isBest = (id) => {
+        const s = scenarios.find((x) => x.id === id);
+        if (!s) return false;
+        const bestOpt = s.options.find((o) => o.best);
+        return answers[id] === (bestOpt ? bestOpt.id : null);
+    };
+
+    // 1. Ánh Sáng Trong Bóng Tối (Liêm): Cần chọn tốt nhất ở Scenario 5, 6 và 10
+    if (isBest(5) && isBest(6) && isBest(10)) {
         achievements.push('Ánh Sáng Trong Bóng Tối');
     }
+
+    // 2. Deadline Slayer (Cần): Cần chọn tốt nhất ở Scenario 1, 2 và 9
+    if (isBest(1) && isBest(2) && isBest(9)) {
+        achievements.push('Deadline Slayer');
+    }
+
+    // 3. Không Ai Biết (Chính): Cần chọn tốt nhất ở Scenario 7, 8, 9 và 10
+    if (isBest(7) && isBest(8) && isBest(9) && isBest(10)) {
+        achievements.push('Không Ai Biết');
+    }
+
+    // 4. Không Một Xu Lãng Phí (Kiệm): Cần chọn tốt nhất ở Scenario 3, 4 và 9
+    if (isBest(3) && isBest(4) && isBest(9)) {
+        achievements.push('Không Một Xu Lãng Phí');
+    }
+
+    // 5. Bậc Thầy Cân Bằng (Năng lượng >= 70% và Tiến độ >= 70%)
+    if (state && state.resources && state.resources.energy >= 70 && state.resources.progress >= 70) {
+        achievements.push('Bậc Thầy Cân Bằng');
+    }
+
+    // 6. Nhà Quản Lý Tài Ba (Tài chính >= 300.000 VNĐ)
+    if (state && state.resources && state.resources.money >= 300000) {
+        achievements.push('Nhà Quản Lý Tài Ba');
+    }
+
+    // 7. Chiến Thần Vượt Khó (Năng lượng <= 15% hoặc Tài chính <= 50.000 VNĐ, Tiến độ >= 80%)
+    if (state && state.resources && (state.resources.energy <= 15 || state.resources.money <= 50000) && state.resources.progress >= 80) {
+        achievements.push('Chiến Thần Vượt Khó');
+    }
+
+    // 8. Chiến Lược Gia Hiệu Suất (Tiến độ >= 100%)
+    if (state && state.resources && state.resources.progress >= 100) {
+        achievements.push('Chiến Lược Gia Hiệu Suất');
+    }
+
     return achievements;
 };
 
@@ -727,7 +780,7 @@ const Challenge = () => {
                     chinh: gameState.traits.chinh,
                 },
                 primaryTitle: getPrimaryTitle(bestCount),
-                hiddenAchievements: buildHiddenAchievements(scenarios, answers),
+                hiddenAchievements: buildHiddenAchievements(scenarios, answers, gameState),
                 decisions: buildDecisions(scenarios, answers),
             };
 
@@ -873,6 +926,32 @@ const Challenge = () => {
                         </div>
                     </div>
 
+                    {/* Test Traits UI */}
+                    <div className="p-4 bg-surface-container-low border border-outline-variant rounded flex flex-col gap-3">
+                        <h3 className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Chỉ số Phẩm chất</h3>
+                        {[
+                            { key: 'can', label: 'Cần', color: '#1a73e8' },
+                            { key: 'kiem', label: 'Kiệm', color: '#0d9488' },
+                            { key: 'liem', label: 'Liêm', color: '#7c3aed' },
+                            { key: 'chinh', label: 'Chính', color: '#d97706' },
+                        ].map(({ key, label, color }) => {
+                            const val = gameState.traits[key] ?? 100;
+                            return (
+                                <div key={key} className="flex flex-col gap-1">
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-[11px] font-semibold text-on-surface-variant uppercase">{label}</span>
+                                        <span className="text-[11px] font-bold" style={{ color }}>{val}<span className="text-on-surface-variant font-normal">/100</span></span>
+                                    </div>
+                                    <div className="w-full h-1.5 bg-surface-variant rounded-full overflow-hidden">
+                                        <div
+                                            className="h-full rounded-full transition-all duration-500"
+                                            style={{ width: `${val}%`, backgroundColor: color }}
+                                        />
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
 
 
                     {/* Story Progress */}
@@ -889,8 +968,8 @@ const Challenge = () => {
                                         <div className="flex items-start gap-4 relative z-10">
                                             <div
                                                 className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${dayActive || dayCompleted
-                                                        ? 'bg-secondary-container border-secondary-container'
-                                                        : 'bg-surface border-outline-variant'
+                                                    ? 'bg-secondary-container border-secondary-container'
+                                                    : 'bg-surface border-outline-variant'
                                                     }`}
                                             >
                                                 {dayCompleted && (
@@ -912,8 +991,8 @@ const Challenge = () => {
                                                     <div key={sid} className="relative">
                                                         <div
                                                             className={`absolute -left-[12px] top-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-2 transition-colors ${mActive || mCompleted
-                                                                    ? 'bg-secondary-container border-secondary-container'
-                                                                    : 'bg-surface border-outline-variant'
+                                                                ? 'bg-secondary-container border-secondary-container'
+                                                                : 'bg-surface border-outline-variant'
                                                                 }`}
                                                         ></div>
                                                         <div className="pl-3">
@@ -1003,20 +1082,20 @@ const Challenge = () => {
                                             key={opt.id}
                                             onClick={() => selectOption(opt.id)}
                                             className={`lift-hover w-full text-left p-6 bg-surface border rounded flex gap-4 items-start group transition-colors ${isDisabled
-                                                    ? isSelected
-                                                        ? opt.best
-                                                            ? 'border-primary bg-[#F4F7FA]'
-                                                            : 'border-surface-tint bg-[#F6F3F2]'
-                                                        : 'opacity-50 pointer-events-none border-outline-variant'
-                                                    : 'border-outline-variant'
+                                                ? isSelected
+                                                    ? opt.best
+                                                        ? 'border-primary bg-[#F4F7FA]'
+                                                        : 'border-surface-tint bg-[#F6F3F2]'
+                                                    : 'opacity-50 pointer-events-none border-outline-variant'
+                                                : 'border-outline-variant'
                                                 }`}
                                         >
                                             <div
                                                 className={`w-8 h-8 rounded-full border flex items-center justify-center flex-shrink-0 mt-1 transition-colors ${isSelected
-                                                        ? opt.best
-                                                            ? 'bg-primary text-on-primary border-primary'
-                                                            : 'bg-surface-tint text-on-primary border-surface-tint'
-                                                        : 'border-outline-variant group-hover:border-primary'
+                                                    ? opt.best
+                                                        ? 'bg-primary text-on-primary border-primary'
+                                                        : 'bg-surface-tint text-on-primary border-surface-tint'
+                                                    : 'border-outline-variant group-hover:border-primary'
                                                     }`}
                                             >
                                                 <span className="font-label-md text-label-md">{opt.letter}</span>

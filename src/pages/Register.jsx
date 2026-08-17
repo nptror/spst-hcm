@@ -137,10 +137,10 @@ const Register = () => {
                     progress: 0,
                     energy: 100,
                     money: 320000,
-                    trait_can: 0,
-                    trait_kiem: 0,
-                    trait_liem: 0,
-                    trait_chinh: 0,
+                    trait_can: 100,
+                    trait_kiem: 100,
+                    trait_liem: 100,
+                    trait_chinh: 100,
                     primary_title: 'Tân binh',
                     hidden_achievements: []
                 }]).select();

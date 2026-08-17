@@ -5,7 +5,7 @@ import Footer from '../component/Footer';
 
 const DEFAULT_GAME_STATE = {
     resources: { progress: 0, energy: 100, money: 320000 },
-    traits: { can: 0, kiem: 0, liem: 0, chinh: 0 },
+    traits: { can: 100, kiem: 100, liem: 100, chinh: 100 },
 };
 
 const loadResult = () => {
@@ -31,6 +31,73 @@ const TITLE_DESCRIPTIONS = {
         'Dành cho người đang từng bước rèn luyện các chuẩn mực Cần - Kiệm - Liêm - Chính trong đời sống thường nhật.',
     'NGƯỜI HỌC VIỆC':
         'Hành trình rèn luyện vừa mới bắt đầu — mỗi quyết định hôm nay là một bài học quý giá cho tương lai.',
+};
+
+const BADGE_META = {
+    'Ánh Sáng Trong Bóng Tối': {
+        icon: 'lightbulb',
+        desc: 'Bạn đã đưa ra tất cả quyết định liêm chính nhất trong các tình huống thử thách đạo đức.',
+        borderColor: 'border-l-purple-500',
+        iconColor: 'text-purple-600',
+        iconBg: 'bg-purple-100',
+        bgClass: 'bg-purple-50/20'
+    },
+    'Deadline Slayer': {
+        icon: 'swords',
+        desc: 'Chinh phục tất cả tình huống áp lực deadline mà không đánh đổi nguyên tắc.',
+        borderColor: 'border-l-rose-500',
+        iconColor: 'text-rose-600',
+        iconBg: 'bg-rose-100',
+        bgClass: 'bg-rose-50/20'
+    },
+    'Không Ai Biết': {
+        icon: 'visibility_off',
+        desc: 'Đã từ chối cám dỗ khi không có ai quan sát — hành động từ lương tâm, không phải dư luận.',
+        borderColor: 'border-l-slate-700',
+        iconColor: 'text-slate-800',
+        iconBg: 'bg-slate-200',
+        bgClass: 'bg-slate-50/40'
+    },
+    'Không Một Xu Lãng Phí': {
+        icon: 'account_balance_wallet',
+        desc: 'Quản lý tài chính thông minh, tiết kiệm và không chi tiêu lãng phí trong suốt hành trình.',
+        borderColor: 'border-l-emerald-500',
+        iconColor: 'text-emerald-600',
+        iconBg: 'bg-emerald-100',
+        bgClass: 'bg-emerald-50/20'
+    },
+    'Bậc Thầy Cân Bằng': {
+        icon: 'balance',
+        desc: 'Hoàn thành hành trình với cả Năng lượng và Tiến độ đều đạt từ 70% trở lên.',
+        borderColor: 'border-l-cyan-500',
+        iconColor: 'text-cyan-600',
+        iconBg: 'bg-cyan-100',
+        bgClass: 'bg-cyan-50/20'
+    },
+    'Nhà Quản Lý Tài Ba': {
+        icon: 'payments',
+        desc: 'Kết thúc 5 ngày với số dư tài chính tối thiểu là 300.000 VNĐ.',
+        borderColor: 'border-l-amber-500',
+        iconColor: 'text-amber-600',
+        iconBg: 'bg-amber-100',
+        bgClass: 'bg-amber-50/20'
+    },
+    'Chiến Thần Vượt Khó': {
+        icon: 'volunteer_activism',
+        desc: 'Hoàn thành game khi Năng lượng hoặc Tài chính chạm mức báo động (dưới 15% hoặc 50.000 VNĐ) nhưng Tiến độ vẫn đạt trên 80%.',
+        borderColor: 'border-l-fuchsia-500',
+        iconColor: 'text-fuchsia-600',
+        iconBg: 'bg-fuchsia-100',
+        bgClass: 'bg-fuchsia-50/20'
+    },
+    'Chiến Lược Gia Hiệu Suất': {
+        icon: 'trending_up',
+        desc: 'Đạt điểm Tiến độ tuyệt đối (100%) khi kết thúc game.',
+        borderColor: 'border-l-sky-500',
+        iconColor: 'text-sky-600',
+        iconBg: 'bg-sky-100',
+        bgClass: 'bg-sky-50/20'
+    },
 };
 
 const getRadarPoints = (traits) => {
@@ -156,22 +223,32 @@ const Result = () => {
 
                             {/* Hidden Achievements */}
                             {hiddenAchievements.length > 0 ? (
-                                hiddenAchievements.map((title, index) => (
-                                    <div key={index} className="ethos-blockquote rounded-r-xl p-8 border border-surface-variant border-l-0 relative">
-                                        <div className="flex items-start gap-4">
-                                            <div className="w-12 h-12 rounded-full bg-secondary-fixed flex items-center justify-center flex-shrink-0">
-                                                <span className="material-symbols-outlined text-secondary" style={{ fontVariationSettings: "'FILL' 1" }}>lightbulb</span>
-                                            </div>
-                                            <div>
-                                                <div className="text-label-md uppercase tracking-widest text-secondary-container mb-2 font-bold text-xs">Thành Tựu Đặc Biệt</div>
-                                                <h3 className="text-headline-md text-primary font-bold mb-2">{title}</h3>
-                                                <p className="text-body-md text-on-surface-variant">
-                                                    Bạn đã duy trì chuẩn mực đạo đức ngay cả trong những tình huống "không ai nhìn thấy" — minh chứng cao nhất của sự liêm chính.
-                                                </p>
+                                hiddenAchievements.map((title, index) => {
+                                    const meta = BADGE_META[title] || {
+                                        icon: 'star',
+                                        desc: 'Thành tựu đặc biệt trong hành trình rèn luyện đạo đức.',
+                                        borderColor: 'border-l-primary',
+                                        iconColor: 'text-primary',
+                                        iconBg: 'bg-surface-variant',
+                                        bgClass: 'bg-surface-container-lowest'
+                                    };
+                                    return (
+                                        <div key={index} className={`rounded-r-xl p-8 border border-surface-variant border-l-4 ${meta.borderColor} ${meta.bgClass} relative`}>
+                                            <div className="flex items-start gap-4">
+                                                <div className={`w-12 h-12 rounded-full ${meta.iconBg} flex items-center justify-center flex-shrink-0`}>
+                                                    <span className={`material-symbols-outlined ${meta.iconColor}`} style={{ fontVariationSettings: "'FILL' 1" }}>{meta.icon}</span>
+                                                </div>
+                                                <div>
+                                                    <div className="text-label-md uppercase tracking-widest text-on-surface-variant/70 mb-2 font-bold text-xs">Thành Tựu Đặc Biệt</div>
+                                                    <h3 className="text-headline-md text-primary font-bold mb-2">{title}</h3>
+                                                    <p className="text-body-md text-on-surface-variant">
+                                                        {meta.desc}
+                                                    </p>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                ))
+                                    );
+                                })
                             ) : (
                                 <div className="rounded-r-xl p-8 border border-surface-variant border-l-0 relative bg-surface-container-lowest">
                                     <div className="flex items-start gap-4">
@@ -182,7 +259,7 @@ const Result = () => {
                                             <div className="text-label-md uppercase tracking-widest text-on-surface-variant mb-2 font-bold text-xs">Thành Tựu Đặc Biệt</div>
                                             <h3 className="text-headline-md text-on-surface font-bold mb-2">Chưa mở khóa</h3>
                                             <p className="text-body-md text-on-surface-variant">
-                                                Hoàn thành trọn vẹn nhóm tình huống Liêm để mở khóa thành tựu ẩn.
+                                                Hãy cố gắng chọn các quyết định xuất sắc nhất của từng phẩm chất để mở khóa các thành tựu ẩn.
                                             </p>
                                         </div>
                                     </div>

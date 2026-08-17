@@ -47,23 +47,43 @@ const Ranking = () => {
                     const BADGE_META = {
                         'Ánh Sáng Trong Bóng Tối': {
                             icon: 'lightbulb',
-                            bgClass: 'bg-gradient-to-r from-amber-400 to-orange-500 text-white border border-orange-300/30',
+                            bgClass: 'bg-gradient-to-r from-purple-500 to-indigo-600 text-white border border-purple-400/30',
                             desc: 'Đã đưa ra tất cả quyết định liêm chính nhất trong các tình huống thử thách đạo đức.'
                         },
                         'Deadline Slayer': {
                             icon: 'swords',
-                            bgClass: 'bg-gradient-to-r from-red-500 to-rose-600 text-white border border-red-400/30',
+                            bgClass: 'bg-gradient-to-r from-rose-500 to-red-600 text-white border border-red-400/30',
                             desc: 'Chinh phục tất cả tình huống áp lực deadline mà không đánh đổi nguyên tắc.'
                         },
                         'Không Ai Biết': {
                             icon: 'visibility_off',
-                            bgClass: 'bg-gradient-to-r from-slate-700 to-gray-900 text-white border border-gray-600/30',
+                            bgClass: 'bg-gradient-to-r from-slate-700 to-slate-900 text-white border border-slate-600/30',
                             desc: 'Đã từ chối cám dỗ khi không có ai quan sát — hành động từ lương tâm, không phải dư luận.'
                         },
                         'Không Một Xu Lãng Phí': {
                             icon: 'account_balance_wallet',
                             bgClass: 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white border border-emerald-400/30',
                             desc: 'Quản lý tài chính thông minh, tiết kiệm và không chi tiêu lãng phí trong suốt hành trình.'
+                        },
+                        'Bậc Thầy Cân Bằng': {
+                            icon: 'balance',
+                            bgClass: 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white border border-cyan-400/30',
+                            desc: 'Hoàn thành hành trình với cả Năng lượng và Tiến độ đều đạt từ 70% trở lên.'
+                        },
+                        'Nhà Quản Lý Tài Ba': {
+                            icon: 'payments',
+                            bgClass: 'bg-gradient-to-r from-amber-400 to-yellow-500 text-white border border-amber-300/30',
+                            desc: 'Kết thúc 5 ngày với số dư tài chính tối thiểu là 300.000 VNĐ.'
+                        },
+                        'Chiến Thần Vượt Khó': {
+                            icon: 'volunteer_activism',
+                            bgClass: 'bg-gradient-to-r from-fuchsia-500 to-pink-600 text-white border border-fuchsia-400/30',
+                            desc: 'Hoàn thành game khi Năng lượng hoặc Tài chính chạm mức báo động (dưới 15% hoặc 50.000 VNĐ) nhưng Tiến độ vẫn đạt trên 80%.'
+                        },
+                        'Chiến Lược Gia Hiệu Suất': {
+                            icon: 'trending_up',
+                            bgClass: 'bg-gradient-to-r from-sky-400 to-indigo-500 text-white border border-sky-300/30',
+                            desc: 'Đạt điểm Tiến độ tuyệt đối (100%) khi kết thúc game.'
                         },
                     };
 
